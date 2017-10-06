@@ -34,15 +34,19 @@ int g_demo = GAMMA_CORRECTION_DEMO;
 bool g_quit = false;
 bool g_paramsChanged = true;
 bool g_camera = CAMERA_DEFAULT;
+bool g_cameraOpen = false;
 bool g_gray = GRAY_DEFAULT;
+bool g_drawn = false;
 Parameters g_params;
 
 // declarations
 void deinit_parameters();
 void init_parameters();
+void reload_parameters();
 void CL_CALLBACK onOpenCLError(const char *errinfo, const void *private_info,
 	size_t cb, void *user_data);
 unsigned int __stdcall parametersLoop(void*);
+
 
 
 
@@ -92,20 +96,28 @@ int main(int argc, char** argv)
 	int w, h, nc, nI;
 	size_t nbytesI, numberOfValues, sizeOfBuffers, sizeOfBuffersO;
 	float *h_in;
+	VideoCapture camera;
+
+	
 	while (!g_quit)
 	{
+		reload_parameters();
 		g_paramsChanged = false;
 
 		if (g_camera)
 		{
-			VideoCapture camera(0); // open the default camera
-			if (!camera.isOpened())  // check if we succeeded
+			if (!g_cameraOpen)
 			{
-				cerr << "Couldn't open camera" << endl;
-				return -1;
+				camera.open(0); // open the default camera
+				if (!camera.isOpened())  // check if we succeeded
+				{
+					cerr << "Couldn't open camera" << endl;
+					return -1;
+				}
+				camera.set(CV_CAP_PROP_FRAME_WIDTH, camW);
+				camera.set(CV_CAP_PROP_FRAME_HEIGHT, camH);
+				g_cameraOpen = true;
 			}
-			camera.set(CV_CAP_PROP_FRAME_WIDTH, camW);
-			camera.set(CV_CAP_PROP_FRAME_HEIGHT, camH);
 			// read in first frame to get the dimensions
 			while (true)
 			{
@@ -120,7 +132,7 @@ int main(int argc, char** argv)
 			//image = "C:\\Wasted.jpg";
 			// Load the input image using opencv (load as grayscale if "gray==true", otherwise as is (may be color or grayscale))
 			mIn = cv::imread(image.c_str(), (g_params.get_bool("gray") ? CV_LOAD_IMAGE_GRAYSCALE : -1));
-			cout << "image:" << image.c_str() << endl;
+			//cout << "image:" << image.c_str() << endl;
 			// check
 			if (mIn.data == NULL) { cerr << "ERROR: Could not load image " << image << endl; return 1; }
 		}
@@ -135,10 +147,16 @@ int main(int argc, char** argv)
 		nI = w*h*nc;
 		nbytesI = (size_t)nI*sizeof(float);
 		h_in = new float[(size_t)nI];
-		cout << "image- w:" << w << " h:" << h << " nc:" << nc << endl;
+		//cout << "image- w:" << w << " h:" << h << " nc:" << nc << endl;
 		/*showImage("Input", mIn, 100, 100);
 		cv::waitKey(0);*/
 		convert_mat_to_layered(h_in, mIn);
+
+/*
+		Mat mOut(h, w, mIn.type());
+		convert_layered_to_mat(mOut, h_in);
+		showImage("Output2", mOut, 100, 100);
+		cv::waitKey(0);*/
 
 		////Initialization
 		//numberOfValues = 50;
@@ -154,39 +172,33 @@ int main(int argc, char** argv)
 
 		demo->init_program_args(h_in, w, h, nc, nbytesI);
 		demo->execute_program();
-		demo->display_output();
-
+		if (!g_drawn) demo->display_output();
+		
+		if (!g_camera)
+		{
+			cv::waitKey(1000);
+		}
+		else
+		{
+			cv::waitKey(30);
+		}
 
 		// deallocate resources
 		free(h_in);
 		demo->deinit_program_args();
 
-		std::cout << "Done. waiting..." << std::endl;
+		//std::cout << "Done. waiting..." << std::endl;
 
-		while (!g_camera && !g_paramsChanged);
+		//while (!g_camera && !g_paramsChanged);
 	}
     
-
+	demo->deinit_parameters();
 	deinit_parameters();
 }
 
 
 
-void init_parameters()
-{
-	cout << "before parametersInit()" << endl;
-	g_paramHandler = (HANDLE)_beginthreadex(0, 0, parametersLoop, 0, 0, 0);
-	cout << "after parametersInit()" << endl;
-	
-	Parameter<int> *demo_ = new Parameter<int>("demo", g_demo, "demo");
-	Parameter<bool> *cam = new Parameter<bool>("camera", g_camera, "c");
-	Parameter<bool> *gray = new Parameter<bool>("gray", g_gray, "gr");
-	g_params.push(demo_);
-	g_params.push(cam);
-	g_params.push(gray);
-	cout << "params:" << endl;
-	cout << g_params << endl;
-}
+
 void deinit_parameters()
 {
 	CloseHandle(g_paramHandler);
@@ -210,6 +222,7 @@ unsigned int __stdcall parametersLoop(void*)
 	{
 		cout << "key:" << key << ", val:" << val << endl;
 		if (val != "") g_params.change(key, val);
+		g_cameraOpen = false;
 		g_paramsChanged = true;
 		cout << "params:" << endl;
 		cout << g_params << endl;
@@ -221,4 +234,34 @@ unsigned int __stdcall parametersLoop(void*)
 	}
 	g_quit = true;
 	return 0;
+}
+
+void reload_parameters()
+{
+	try
+	{
+		g_camera = g_params.get_bool("camera");
+		g_gray = g_params.get_bool("gray");
+		g_demo = g_params.get_int("demo");
+	}
+	catch (const std::invalid_argument &e)
+	{
+		std::cerr << "arg does not exist: " << e.what() << std::endl;
+	}
+}
+
+void init_parameters()
+{
+	cout << "before parametersInit()" << endl;
+	g_paramHandler = (HANDLE)_beginthreadex(0, 0, parametersLoop, 0, 0, 0);
+	cout << "after parametersInit()" << endl;
+
+	Parameter<int> *demo_ = new Parameter<int>("demo", g_demo, "demo");
+	Parameter<bool> *cam = new Parameter<bool>("camera", g_camera, "c");
+	Parameter<bool> *gray = new Parameter<bool>("gray", g_gray, "gr");
+	g_params.push(demo_);
+	g_params.push(cam);
+	g_params.push(gray);
+	cout << "params:" << endl;
+	cout << g_params << endl;
 }

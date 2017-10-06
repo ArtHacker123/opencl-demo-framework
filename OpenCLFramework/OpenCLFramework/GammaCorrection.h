@@ -13,7 +13,7 @@ class GammaCorrection : public Demo
 	float gamma = GAMMA_DEFAULT;
 	size_t numberOfValues_;
 	size_t nbytesO_;
-	cl_mem d_out;
+	cl_mem d_out, d_in;
 	const float* h_in;
 	float* h_out;
 	int w_, h_, nc_;
@@ -35,7 +35,7 @@ public:
 	void execute_program();
 	void display_output();
 	void deinit_program_args();
-	void deinit_parameters() {}
+	void deinit_parameters();
 };
 
 

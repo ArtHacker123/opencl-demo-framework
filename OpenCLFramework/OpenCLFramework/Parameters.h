@@ -96,3 +96,10 @@ public:
 
 	void clear();
 };
+
+class ParameterChangedException : public std::exception
+{
+	ParameterChangedException() {}
+	~ParameterChangedException() {}
+};
+

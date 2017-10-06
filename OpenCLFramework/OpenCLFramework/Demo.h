@@ -3,11 +3,12 @@
 // includes
 #include "Parameters.h"
 #include "oclobject.hpp"
-
+#include "opencv2/opencv.hpp"
+#include "Helper.h"
 // defines
 #define SUCCESS 1
 
-
+using namespace cv;
 
 class Demo
 {
