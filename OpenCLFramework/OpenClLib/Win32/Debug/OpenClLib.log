@@ -1,0 +1,9 @@
+﻿Build started 06/10/2017 04:50:26.
+     1>Project "D:\openCL\OpenCLFramework\OpenClLib\OpenClLib.vcxproj" on node 2 (Build target(s)).
+     1>Lib:
+         OpenClLib.vcxproj -> D:\openCL\OpenCLFramework\Win32\Debug\OpenClLib.lib
+     1>Done Building Project "D:\openCL\OpenCLFramework\OpenClLib\OpenClLib.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.05
