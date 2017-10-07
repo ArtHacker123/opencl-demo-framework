@@ -1,8 +1,8 @@
-//
-//// debug memleaks
-//#define _CRTDBG_MAP_ALLOC
-//#include <stdlib.h>
-//#include <crtdbg.h>
+
+// debug memleaks
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 // includes
 #include "basic.hpp"
@@ -19,6 +19,7 @@
 #include "Parameters.h"
 #include "Demo.h"
 #include "GammaCorrection.h"
+#include "GradientDemo.h"
 #include <memory> //unique_ptr
 
 #include "oclobject.hpp"
@@ -39,30 +40,27 @@ using namespace cv;
 
 // globals
 HANDLE g_paramHandler;
-int g_demo = GAMMA_CORRECTION_DEMO;
+int g_demo = GRADIENT_DEMO;
 bool g_quit = false;
 bool g_paramsChanged = true;
 bool g_camera = CAMERA_DEFAULT;
 bool g_cameraOpen = false;
 bool g_gray = GRAY_DEFAULT;
-bool g_drawn = false;
 Parameters g_params;
 
 // declarations
 void deinit_parameters();
 void init_parameters();
-void reload_parameters();
+void reload_parameters(Demo **demo, OpenCLBasic *oclobjects);
 void CL_CALLBACK onOpenCLError(const char *errinfo, const void *private_info,
 	size_t cb, void *user_data);
 unsigned int __stdcall parametersLoop(void*);
 
 
 
-
-
 int main(int argc, char** argv)
 {
-	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	//main init main parameters(demo/camera)
 	//demo init parameters
@@ -89,10 +87,10 @@ int main(int argc, char** argv)
 		cout << "in demo default" << endl;
 	case GAMMA_CORRECTION_DEMO:
 		demo = new GammaCorrection(g_params);
-		demo->init_parameters(g_params);
+		break;
 	case GRADIENT_DEMO:
-		demo = new GammaCorrection(g_params);
-		demo->init_parameters(g_params);
+		demo = new GradientDemo(g_params);
+		break;
 	default:
 		break;
 	}
@@ -115,7 +113,7 @@ int main(int argc, char** argv)
 	
 	while (!g_quit)
 	{
-		reload_parameters();
+		reload_parameters(&demo, &oclobjects);
 		g_paramsChanged = false;
 
 		if (g_camera)
@@ -167,27 +165,12 @@ int main(int argc, char** argv)
 		cv::waitKey(0);*/
 		convert_mat_to_layered(h_in, mIn);
 
-/*
-		Mat mOut(h, w, mIn.type());
-		convert_layered_to_mat(mOut, h_in);
-		showImage("Output2", mOut, 100, 100);
-		cv::waitKey(0);*/
-
-		////Initialization
-		//numberOfValues = 50;
-		//sizeOfBuffers = numberOfValues*sizeof(float);
-		//sizeOfBuffersO = numberOfValues*sizeof(float);
-		//h_in = (float*)malloc(sizeOfBuffers);  //Our input data array
-		//for (unsigned int i = 0; i<numberOfValues; i++)                           //We put some numbers in it
-		//{
-		//	h_in[i] = i;       //I know, I'm very lazy.....
-		//}
 
 		demo->load_parameters(g_params);
 
 		demo->init_program_args(h_in, w, h, nc, nbytesI);
 		demo->execute_program();
-		if (!g_drawn) demo->display_output();
+		demo->display_output();
 		
 		if (!g_camera)
 		{
@@ -207,7 +190,6 @@ int main(int argc, char** argv)
 		//while (!g_camera && !g_paramsChanged);
 	}
     
-	demo->deinit_parameters();
 	delete demo;
 	deinit_parameters();
 	//_CrtDumpMemoryLeaks();
@@ -239,6 +221,10 @@ unsigned int __stdcall parametersLoop(void*)
 	{
 		cout << "key:" << key << ", val:" << val << endl;
 		if (val != "") g_params.change(key, val);
+		/*if (key == "demo")
+		{
+			delete g_demo;
+		}*/
 		g_cameraOpen = false;
 		g_paramsChanged = true;
 		cout << "params:" << endl;
@@ -253,13 +239,34 @@ unsigned int __stdcall parametersLoop(void*)
 	return 0;
 }
 
-void reload_parameters()
+void reload_parameters(Demo **demo, OpenCLBasic *oclobjects)
 {
 	try
 	{
 		g_camera = g_params.get_bool("camera");
 		g_gray = g_params.get_bool("gray");
-		g_demo = g_params.get_int("demo");
+		int ndemo = g_params.get_int("demo");
+		if (ndemo != g_demo)
+		{
+			g_demo = ndemo;
+			delete *demo;
+			destroyAllWindows();
+			switch (g_demo)
+			{
+			case DEMO_DEFAULT:
+				cout << "in demo default" << endl;
+			case GAMMA_CORRECTION_DEMO:
+				*demo = new GammaCorrection(g_params);
+				break;
+			case GRADIENT_DEMO:
+				*demo = new GradientDemo(g_params);
+				break;
+			default:
+				std::cerr << "illegal demo value" << std::endl;
+				exit(1);
+			}
+			(*demo)->compile_program(oclobjects);
+		}
 	}
 	catch (const std::invalid_argument &e)
 	{

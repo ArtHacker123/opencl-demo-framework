@@ -10,6 +10,7 @@
 
 class GammaCorrection : public Demo
 {
+	Parameters *params_;
 	float gamma = GAMMA_DEFAULT;
 	size_t numberOfValues_;
 	size_t nbytesO_;
@@ -22,10 +23,12 @@ class GammaCorrection : public Demo
 	OpenCLBasic *oclobjects_;
 public:
 	void load_parameters(const Parameters &params);
-	GammaCorrection(const Parameters &params)
+	GammaCorrection(Parameters &params)
 	{
+		init_parameters(params);
 		load_parameters(params);
 	}
+	~GammaCorrection();
 	void init_parameters(Parameters &params);
 
 	void compile_program(OpenCLBasic *oclobjects);

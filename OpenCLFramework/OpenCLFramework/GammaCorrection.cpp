@@ -10,11 +10,18 @@ void GammaCorrection::load_parameters(const Parameters &params)
 	catch (const std::invalid_argument &e)
 	{
 		std::cerr << "arg does not exist: " << e.what() << std::endl;
+		exit(1);
+	}
+	catch (const exception &e)
+	{
+		std::cerr << "exception: " << e.what() << std::endl;
+		exit(1);
 	}
 }
 
 void GammaCorrection::init_parameters(Parameters &params)
 {
+	params_ = &params;
 	shared_ptr<Parameter<float>> p_gamma(new Parameter<float>("gamma", gamma, "g"));
 	params.push(std::move(p_gamma));
 }
@@ -167,4 +174,10 @@ void GammaCorrection::deinit_program_args()
 void GammaCorrection::deinit_parameters()
 {
 	delete oprogram_;
+	//params_->clear();
+	params_->rem_float("g");
+}
+GammaCorrection::~GammaCorrection()
+{
+	deinit_parameters();
 }

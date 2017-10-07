@@ -20,6 +20,13 @@ bool isCamera(shared_ptr<Parameter<bool>> par)
 	return par->key == "c";
 }
 
+struct eqfloat{
+	eqfloat(string compare_to) : compare_to_(compare_to) { }
+	bool operator()(const shared_ptr<Parameter<float>> c1) const { return  c1->key == compare_to_; }
+private:
+	const string compare_to_;
+};
+
 void Parameters::clear()
 {
 	//for (auto &it : fparams) delete it;
@@ -38,6 +45,13 @@ void Parameters::clear()
 	iparams.push_back(dparam);
 }
 
+
+void Parameters::rem_float(const string key)
+{
+	vector<shared_ptr<Parameter<float>>>::iterator it = find_if(fparams.begin(), fparams.end(), eqfloat(key));
+	
+	if (it != fparams.end()) fparams.erase(it);
+}
 
 float Parameters::get_float(string name) const
 {

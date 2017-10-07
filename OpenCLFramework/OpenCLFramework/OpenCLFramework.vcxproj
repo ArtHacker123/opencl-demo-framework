@@ -197,6 +197,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GammaCorrection.cpp" />
+    <ClCompile Include="GradientDemo.cpp" />
     <ClCompile Include="Parameters.cpp" />
     <ClCompile Include="try.cpp" />
   </ItemGroup>
@@ -210,6 +211,7 @@
   <ItemGroup>
     <ClInclude Include="Demo.h" />
     <ClInclude Include="GammaCorrection.h" />
+    <ClInclude Include="GradientDemo.h" />
     <ClInclude Include="Parameters.h" />
   </ItemGroup>
   <ItemGroup>

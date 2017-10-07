@@ -62,6 +62,9 @@ public:
 	float get_float(string name) const;
 	bool get_bool(string name) const;
 	int get_int(string name) const;
+	void rem_float(const string key);
+	/*bool pop_bool(string name);
+	int pop_int(string name);*/
 	
 	friend std::ostream& operator<< (std::ostream& stream, const Parameters& param)
 	{
