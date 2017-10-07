@@ -1,1 +1,5 @@
 *.opensdf
+*.obj
+*.idb
+*.pdb
+*.lib

@@ -1,8 +1,8 @@
-﻿Build started 07/10/2017 19:10:51.
-     1>Project "D:\openCL\OpenCLFramework\OpenCLFramework\OpenCLFramework.vcxproj" on node 2 (Build target(s)).
+﻿Build started 07/10/2017 19:17:22.
+     1>Project "D:\openCL\OpenCLFramework\OpenCLFramework\OpenCLFramework.vcxproj" on node 2 (Rebuild target(s)).
      1>_Intel_OpenCL_Build_Rules:
          Preprocessing: BasicKernels.cl
-         cmd.exe /Q /C "C:\Users\Roy\AppData\Local\Temp\tmpcf84a1394a064f5fa4e6b8d98ca078dc.cmd"
+         cmd.exe /Q /C "C:\Users\Roy\AppData\Local\Temp\tmpfa2da2231919499d9597f6a319bba78c.cmd"
          "D:\Intel\OpenCL\sdk\bin\x86\ioc32.exe" -cmd=build -input="D:\openCL\OpenCLFramework\OpenCLFramework\BasicKernels.cl" -output="Win32\Debug\BasicKernels.out" -VS -device=CPU -simd=default -targetos=current            -bo="           "
          Setting target instruction set architecture to: Default (Advanced Vector Extension 2 (AVX2))
          OpenCL Intel CPU device was found!
@@ -28,11 +28,14 @@
          Build succeeded!
          
        ClCompile:
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\OpenCV\Build\x86\vc12\..\..\include /ID:\Intel\OpenCL\sdk\\include /I..\..\common /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /AI"C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral" /Zi /clr /nologo /W3 /WX- /Od /Oy- /D Win32 /D _DEBUG /D _CONSOLE /D WIN32 /D _DEBUG /D _CONSOLE /D DX_MEDIA_SHARING /D DX9_SHARING /D __D3D10__ /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm- /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt /clr:nostdlib try.cpp
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\OpenCV\Build\x86\vc12\..\..\include /ID:\Intel\OpenCL\sdk\\include /I..\..\common /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /AI"C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral" /Zi /clr /nologo /W3 /WX- /Od /Oy- /D Win32 /D _DEBUG /D _CONSOLE /D WIN32 /D _DEBUG /D _CONSOLE /D DX_MEDIA_SHARING /D DX9_SHARING /D __D3D10__ /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm- /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt /clr:nostdlib GammaCorrection.cpp Parameters.cpp try.cpp
+         GammaCorrection.cpp
+         Parameters.cpp
          try.cpp
      1>try.cpp(111): warning C4101: 'sizeOfBuffersO' : unreferenced local variable
      1>try.cpp(111): warning C4101: 'sizeOfBuffers' : unreferenced local variable
      1>try.cpp(111): warning C4101: 'numberOfValues' : unreferenced local variable
+         Generating Code...
        Link:
          D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\openCL\OpenCLFramework\Win32\Debug\OpenCLFramework.exe" /INCREMENTAL /NOLOGO /LIBPATH:D:\OpenCV\Build\x86\vc12\lib /LIBPATH:D:\OpenCV\Build\x86\vc12\bin /LIBPATH:D:\Intel\OpenCL\sdk\\lib\x86 OpenCL.lib opencv_calib3d2413d.lib opencv_contrib2413d.lib opencv_core2413d.lib opencv_features2d2413d.lib opencv_flann2413d.lib opencv_gpu2413d.lib opencv_highgui2413d.lib opencv_imgproc2413d.lib opencv_legacy2413d.lib opencv_ml2413d.lib opencv_nonfree2413d.lib opencv_objdetect2413d.lib opencv_ocl2413d.lib opencv_photo2413d.lib opencv_stitching2413d.lib opencv_superres2413d.lib opencv_ts2413d.lib opencv_video2413d.lib opencv_videostab2413d.lib opencl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\openCL\OpenCLFramework\Win32\Debug\OpenCLFramework.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\openCL\OpenCLFramework\Win32\Debug\OpenCLFramework.lib" /MACHINE:X86 Win32\Debug\GammaCorrection.obj
          Win32\Debug\Parameters.obj
@@ -55,8 +58,8 @@
          :VCEnd
          BasicKernels.cl
                  1 file(s) copied.
-     1>Done Building Project "D:\openCL\OpenCLFramework\OpenCLFramework\OpenCLFramework.vcxproj" (Build target(s)).
+     1>Done Building Project "D:\openCL\OpenCLFramework\OpenCLFramework\OpenCLFramework.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:04.22
+Time Elapsed 00:00:06.62
