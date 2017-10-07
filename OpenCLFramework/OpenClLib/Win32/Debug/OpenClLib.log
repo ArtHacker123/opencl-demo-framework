@@ -1,8 +1,14 @@
-﻿Build started 06/10/2017 22:47:48.
-     1>Project "D:\openCL\OpenCLFramework\OpenClLib\OpenClLib.vcxproj" on node 2 (Build target(s)).
+﻿Build started 07/10/2017 18:18:25.
+     1>Project "D:\openCL\OpenCLFramework\OpenClLib\OpenClLib.vcxproj" on node 2 (Rebuild target(s)).
      1>ClCompile:
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\OpenCV\Build\x86\vc12\..\..\include /ID:\Intel\OpenCL\sdk\\include /I..\..\common /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D CL_USE_DEPRECATED_OPENCL_1_2_APIS /D WIN32 /D _DEBUG /D _CONSOLE /D DX_MEDIA_SHARING /D DX9_SHARING /D __D3D10__ /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Helper.cpp
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\OpenCV\Build\x86\vc12\..\..\include /ID:\Intel\OpenCL\sdk\\include /I..\..\common /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D CL_USE_DEPRECATED_OPENCL_1_2_APIS /D WIN32 /D _DEBUG /D _CONSOLE /D DX_MEDIA_SHARING /D DX9_SHARING /D __D3D10__ /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\common\basic.cpp ..\..\common\cmdparser.cpp ..\..\common\oclobject.cpp ..\..\common\utils.cpp ..\..\common\yuv_utils.cpp Helper.cpp
          Helper.cpp
+         yuv_utils.cpp
+         utils.cpp
+         oclobject.cpp
+         cmdparser.cpp
+         basic.cpp
+         Generating Code...
        Lib:
          D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"D:\openCL\OpenCLFramework\Win32\Debug\OpenClLib.lib" /NOLOGO Win32\Debug\basic.obj
          Win32\Debug\cmdparser.obj
@@ -11,8 +17,8 @@
          Win32\Debug\yuv_utils.obj
          Win32\Debug\Helper.obj
          OpenClLib.vcxproj -> D:\openCL\OpenCLFramework\Win32\Debug\OpenClLib.lib
-     1>Done Building Project "D:\openCL\OpenCLFramework\OpenClLib\OpenClLib.vcxproj" (Build target(s)).
+     1>Done Building Project "D:\openCL\OpenCLFramework\OpenClLib\OpenClLib.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.13
+Time Elapsed 00:00:04.70

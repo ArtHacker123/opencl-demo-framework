@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <utility>
 #include <stdexcept>
+#include <memory>
 
 using namespace std;
 
@@ -42,9 +43,9 @@ std::ostream& operator<< (std::ostream& stream, const Parameter<T>& param)
 
 class Parameters
 {
-	std::vector<Parameter<bool>*> bparams;
-	std::vector<Parameter<int>*> iparams;
-	std::vector<Parameter<float>*> fparams;
+	std::vector<std::shared_ptr<Parameter<bool>>> bparams;
+	std::vector<std::shared_ptr<Parameter<int>>> iparams;
+	std::vector<shared_ptr<Parameter<float>>> fparams;
 public:
 	Parameters();
 
@@ -64,32 +65,32 @@ public:
 	
 	friend std::ostream& operator<< (std::ostream& stream, const Parameters& param)
 	{
-		for (auto it : param.bparams)
+		for (auto &it : param.bparams)
 		{
 			stream << *it << std::endl;
 		}
-		for (auto it : param.iparams)
+		for (auto &it : param.iparams)
 		{
 			stream << *it << std::endl;
 		}
-		for (auto it : param.fparams)
+		for (auto &it : param.fparams)
 		{
 			stream << *it << std::endl;
 		}
 		return stream;
 	}
 
-	void push(Parameter<bool> *par)
+	void push(std::shared_ptr<Parameter<bool>> par)
 	{
 		bparams.push_back(par);
 	}
-	void push(Parameter<int> *par)
+	void push(std::shared_ptr<Parameter<int>> par)
 	{
 		iparams.push_back(par);
 	}
-	void push(Parameter<float> *par)
+	void push(std::shared_ptr<Parameter<float>> par)
 	{
-		fparams.push_back(par);
+		fparams.push_back(std::move(par));
 	}
 
 	void change(string key, string val);

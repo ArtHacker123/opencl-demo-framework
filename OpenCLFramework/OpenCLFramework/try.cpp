@@ -1,3 +1,9 @@
+//
+//// debug memleaks
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+
 // includes
 #include "basic.hpp"
 #include <iostream>
@@ -13,10 +19,12 @@
 #include "Parameters.h"
 #include "Demo.h"
 #include "GammaCorrection.h"
+#include <memory> //unique_ptr
 
 #include "oclobject.hpp"
 #include "cmdparser.hpp"
 #include "Helper.h"
+
 
 // usings
 using namespace std;
@@ -27,6 +35,7 @@ using namespace cv;
 #define GRAY_DEFAULT false
 #define DEMO_DEFAULT 0
 #define GAMMA_CORRECTION_DEMO 1
+#define GRADIENT_DEMO 2
 
 // globals
 HANDLE g_paramHandler;
@@ -53,6 +62,8 @@ unsigned int __stdcall parametersLoop(void*);
 
 int main(int argc, char** argv)
 {
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	//main init main parameters(demo/camera)
 	//demo init parameters
 	//demo compile program(kernel(s)) and args
@@ -77,6 +88,9 @@ int main(int argc, char** argv)
 	case DEMO_DEFAULT:
 		cout << "in demo default" << endl;
 	case GAMMA_CORRECTION_DEMO:
+		demo = new GammaCorrection(g_params);
+		demo->init_parameters(g_params);
+	case GRADIENT_DEMO:
 		demo = new GammaCorrection(g_params);
 		demo->init_parameters(g_params);
 	default:
@@ -136,6 +150,7 @@ int main(int argc, char** argv)
 			// check
 			if (mIn.data == NULL) { cerr << "ERROR: Could not load image " << image << endl; return 1; }
 		}
+		//flip(mIn, mIn, 1);
 		// convert to float representation (opencv loads image values as single bytes by default)
 		mIn.convertTo(mIn, CV_32F);
 		// convert range of each channel to [0,1] (opencv default is [0,255])
@@ -180,11 +195,11 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			cv::waitKey(30);
+			cv::waitKey(20);
 		}
 
 		// deallocate resources
-		free(h_in);
+		delete[] h_in;
 		demo->deinit_program_args();
 
 		//std::cout << "Done. waiting..." << std::endl;
@@ -193,7 +208,9 @@ int main(int argc, char** argv)
 	}
     
 	demo->deinit_parameters();
+	delete demo;
 	deinit_parameters();
+	//_CrtDumpMemoryLeaks();
 }
 
 
@@ -256,10 +273,11 @@ void init_parameters()
 	g_paramHandler = (HANDLE)_beginthreadex(0, 0, parametersLoop, 0, 0, 0);
 	cout << "after parametersInit()" << endl;
 
-	Parameter<int> *demo_ = new Parameter<int>("demo", g_demo, "demo");
-	Parameter<bool> *cam = new Parameter<bool>("camera", g_camera, "c");
-	Parameter<bool> *gray = new Parameter<bool>("gray", g_gray, "gr");
-	g_params.push(demo_);
+	//unique_ptr<Parameter<int>> demo_(new Parameter<int>("demo", g_demo, "demo"));
+	std::shared_ptr<Parameter<int>> demo_(new Parameter<int>("demo", g_demo, "demo"));
+	std::shared_ptr<Parameter<bool>> cam(new Parameter<bool>("camera", g_camera, "c"));
+	std::shared_ptr<Parameter<bool>> gray(new Parameter<bool>("gray", g_gray, "gr"));
+	g_params.push(std::move(demo_));
 	g_params.push(cam);
 	g_params.push(gray);
 	cout << "params:" << endl;

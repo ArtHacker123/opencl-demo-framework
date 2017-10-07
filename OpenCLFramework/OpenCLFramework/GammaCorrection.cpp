@@ -15,8 +15,8 @@ void GammaCorrection::load_parameters(const Parameters &params)
 
 void GammaCorrection::init_parameters(Parameters &params)
 {
-	Parameter<float> *p_gamma = new Parameter<float>("gamma", gamma, "g");
-	params.push(p_gamma);
+	shared_ptr<Parameter<float>> p_gamma(new Parameter<float>("gamma", gamma, "g"));
+	params.push(std::move(p_gamma));
 }
 
 void GammaCorrection::compile_program(OpenCLBasic *oclobjects)
