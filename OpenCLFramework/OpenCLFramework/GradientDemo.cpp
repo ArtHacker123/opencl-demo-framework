@@ -1,18 +1,7 @@
 #include "GradientDemo.h"
 
 
-void GradientDemo::load_parameters(const Parameters &params)
-{
-	try
-	{
-		//gamma = params.get_float("gamma");
-	}
-	catch (const std::invalid_argument &e)
-	{
-		std::cerr << "arg does not exist: " << e.what() << std::endl;
-		exit(1);
-	}
-}
+void GradientDemo::load_parameters(const Parameters &params) {}
 
 void GradientDemo::init_parameters(Parameters &params)
 {

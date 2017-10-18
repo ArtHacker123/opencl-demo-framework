@@ -20,6 +20,7 @@
 #include "Demo.h"
 #include "GammaCorrection.h"
 #include "GradientDemo.h"
+#include "DivergenceDemo.h"
 #include <memory> //unique_ptr
 
 #include "oclobject.hpp"
@@ -37,6 +38,7 @@ using namespace cv;
 #define DEMO_DEFAULT 0
 #define GAMMA_CORRECTION_DEMO 1
 #define GRADIENT_DEMO 2
+#define DIVERGENCE_DEMO 3
 
 // consts
 const char *DEFAULT_IMAGE_PATH = "Desert.jpg";
@@ -65,21 +67,6 @@ int main(int argc, char** argv)
 {
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	//main init main parameters(demo/camera)
-	//demo init parameters
-	//demo compile program(kernel(s)) and args
-	//LOOP
-	//main reload parameters(if demo changed reinit demo)
-	//main set input(image/camera)
-	//demo process input
-	//demo set program(kernel(s)) and args
-	//demo execute program
-	//demo extract and display output(might be multiple outputs)
-	//demo deallocate resources
-	//main deallocate resources
-	//ENDLOOP
-	//demo deinit parameters
-	//main deinit parameters
 
 	init_parameters();
 
@@ -93,6 +80,9 @@ int main(int argc, char** argv)
 		break;
 	case GRADIENT_DEMO:
 		demo = new GradientDemo(g_params);
+		break;
+	case DIVERGENCE_DEMO:
+		demo = new DivergenceDemo(g_params);
 		break;
 	default:
 		break;
@@ -260,6 +250,9 @@ void reload_parameters(Demo **demo, OpenCLBasic *oclobjects)
 				break;
 			case GRADIENT_DEMO:
 				*demo = new GradientDemo(g_params);
+				break;
+			case DIVERGENCE_DEMO:
+				*demo = new DivergenceDemo(g_params);
 				break;
 			default:
 				std::cerr << "illegal demo value" << std::endl;

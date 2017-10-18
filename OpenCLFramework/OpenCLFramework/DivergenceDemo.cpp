@@ -78,10 +78,22 @@ void DivergenceDemo::init_program_args(const float *input, int width,
 	result |= clSetKernelArg(gradKernel_, 5, sizeof(int), &nc_);
 	if (result != CL_SUCCESS)
 	{
-		cout << "Error while setting kernel arguments: " << getErrorString(result) << endl;
+		cout << "Error while setting gradKernel_ arguments: " << getErrorString(result) << endl;
 		exit(1);
 	}
-	//TODO set args for divkernel_
+	
+	result = CL_SUCCESS;
+	result |= clSetKernelArg(divKernel_, 0, sizeof(cl_mem), &d_gradX);
+	result |= clSetKernelArg(divKernel_, 1, sizeof(cl_mem), &d_gradY);
+	result |= clSetKernelArg(divKernel_, 2, sizeof(cl_mem), &d_out);
+	result |= clSetKernelArg(divKernel_, 3, sizeof(int), &w_);
+	result |= clSetKernelArg(divKernel_, 4, sizeof(int), &h_);
+	result |= clSetKernelArg(divKernel_, 5, sizeof(int), &nc_);
+	if (result != CL_SUCCESS)
+	{
+		cout << "Error while setting divKernel_ arguments: " << getErrorString(result) << endl;
+		exit(1);
+	}
 }
 
 void DivergenceDemo::execute_program()
@@ -103,6 +115,9 @@ void DivergenceDemo::execute_program()
 		cerr << "Error while executing the gradient kernel: " << getErrorString(result) << endl;
 		exit(1);
 	}
+
+	clFinish(oclobjects_->queue);
+	
 	result = clEnqueueNDRangeKernel(oclobjects_->queue, divKernel_, workDim,
 		NULL, globalWorkSize,
 		localWorkSize, 0, NULL, NULL);
@@ -142,7 +157,7 @@ void DivergenceDemo::display_output()
 		//if (h_out[i]) cout << h_out[i] << endl;
 	}*/
 	//cout << "total elem:" << numberOfValues_ << "\nnon zero:" << nz << endl;
-	showImage("GradientX", mOut, 100, 100);
+	showImage("Divergence", mOut, 100, 100);
 	//cv::waitKey(0);
 }
 

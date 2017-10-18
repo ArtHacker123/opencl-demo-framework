@@ -29,6 +29,23 @@ __kernel void gradient(
 	int y = yt%h;
 	int c = yt/h;
 	int i = IDX3(x,y,c,w,h);
-	if (x+1 < w && y < h) outputX[i] = input[IDX3(x+1,y,c,w,h)] - input[i];
-    if (x < w && y+1 < h) outputY[i] = input[IDX3(x,y+1,c,w,h)] - input[i];
+	//todo add if (x+1 = w && y < h) output[i] = 0;
+	if (x < w && y < h)	{		outputX[i] = (x+1<w) ? (input[IDX3(x+1,y,c,w,h)] - input[i]) : 0;		outputY[i] = (y+1<h) ? (input[IDX3(x,y+1,c,w,h)] - input[i]) : 0;	} 
+}
+
+__kernel void divergence(
+   __global float* inputX, __global float* inputY, __global float* output,
+   int w, int h, int nc)
+{
+	int x = get_global_id(0);
+	int yt = get_global_id(1);
+	int y = yt%h;
+	int c = yt/h;
+	int i = IDX3(x,y,c,w,h);
+	if (x < w && y < h)
+	{
+		output[i] = (x>0) ? (inputX[i] - inputX[IDX3(x-1,y,c,w,h)]) : 0;
+		output[i] += (y>0) ? (inputY[i] - inputY[IDX3(x,y-1,c,w,h)]) : 0;
+	}
+
 }
