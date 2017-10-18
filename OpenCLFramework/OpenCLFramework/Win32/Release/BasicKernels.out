@@ -14,4 +14,11 @@ gamma_correction info:
 	Preferred multiple of work-group size: 16
 	Minimum amount of private memory: 0
 
+gradient info:
+	Maximum work-group size: 512
+	Compiler work-group size: (0, 0, 0)
+	Local memory size: 0
+	Preferred multiple of work-group size: 16
+	Minimum amount of private memory: 0
+
 Build succeeded!

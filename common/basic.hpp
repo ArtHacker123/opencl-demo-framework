@@ -53,7 +53,7 @@ public:
     {
     }
 };
-
+typedef Error BError;
 
 
 // Allocates piece of aligned memory
@@ -94,7 +94,7 @@ T str_to (const string& s)
 
     if(!ss || (ss.get(), ss))
     {
-        throw Error(
+		throw BError(
             "Cannot interpret string " + inquotes(s) +
             " as object of type " + inquotes(typeid(T).name())
         );
@@ -114,7 +114,7 @@ string to_str (const T x, std::streamsize width = 0, char fill = ' ')
     os << setw(width) << setfill(fill) << x;
     if(!os)
     {
-        throw Error("Cannot represent object as a string");
+		throw BError("Cannot represent object as a string");
     }
     return os.str();
 }

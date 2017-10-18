@@ -1,8 +1,8 @@
 
 // debug memleaks
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
 
 // includes
 #include "basic.hpp"
@@ -38,6 +38,9 @@ using namespace cv;
 #define GAMMA_CORRECTION_DEMO 1
 #define GRADIENT_DEMO 2
 
+// consts
+const char *DEFAULT_IMAGE_PATH = "Desert.jpg";
+
 // globals
 HANDLE g_paramHandler;
 int g_demo = GRADIENT_DEMO;
@@ -60,7 +63,7 @@ unsigned int __stdcall parametersLoop(void*);
 
 int main(int argc, char** argv)
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	//main init main parameters(demo/camera)
 	//demo init parameters
@@ -108,7 +111,7 @@ int main(int argc, char** argv)
 	int w, h, nc, nI;
 	size_t nbytesI, numberOfValues, sizeOfBuffers, sizeOfBuffersO;
 	float *h_in;
-	VideoCapture camera;
+	cv::VideoCapture camera;
 
 	
 	while (!g_quit)
@@ -138,9 +141,9 @@ int main(int argc, char** argv)
 			}
 		}
 		else
-		{
+		{ 
 			bool ret = getParam("i", image, argc, argv);
-			if (!ret) cerr << "ERROR: no image specified" << endl;			if (argc <= 1) { cout << "Usage: " << argv[0] << " -i <image> [-gray]" << endl; return 1; }
+			if (!ret) if (argc > 1) { cerr << "ERROR: illegal arguments" << endl; exit(1); }			if (argc <= 1) image = string(DEFAULT_IMAGE_PATH);
 			//image = "C:\\Wasted.jpg";
 			// Load the input image using opencv (load as grayscale if "gray==true", otherwise as is (may be color or grayscale))
 			mIn = cv::imread(image.c_str(), (g_params.get_bool("gray") ? CV_LOAD_IMAGE_GRAYSCALE : -1));
@@ -227,9 +230,6 @@ unsigned int __stdcall parametersLoop(void*)
 		}*/
 		g_cameraOpen = false;
 		g_paramsChanged = true;
-		cout << "params:" << endl;
-		cout << g_params << endl;
-		cout << "getline:" << endl;
 		getline(cin, line);
 		ss = stringstream(line);
 		ss >> key >> val;
@@ -267,6 +267,8 @@ void reload_parameters(Demo **demo, OpenCLBasic *oclobjects)
 			}
 			(*demo)->compile_program(oclobjects);
 		}
+
+		if (g_paramsChanged) cout << "params:\n" << g_params << endl;
 	}
 	catch (const std::invalid_argument &e)
 	{

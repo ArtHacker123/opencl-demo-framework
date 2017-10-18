@@ -27,6 +27,9 @@
     <ClCompile Include="GradientDemo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DivergenceDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parameters.h">
@@ -41,10 +44,18 @@
     <ClInclude Include="GradientDemo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DivergenceDemo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Intel_OpenCL_Build_Rules Include="BasicKernels.cl">
       <Filter>OpenCL Files</Filter>
     </Intel_OpenCL_Build_Rules>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Desert.jpg">
+      <Filter>Source Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

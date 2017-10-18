@@ -137,8 +137,8 @@ void GradientDemo::display_output()
 		//if (h_out[i]) cout << h_out[i] << endl;
 	}
 	//cout << "total elem:" << numberOfValues_ << "\nnon zero:" << nz << endl;
-	showImage("OutputX", mOutX, 100, 100 );
-	showImage("OutputY", mOutY, 100 + w_ + 40, 100);
+	showImage("GradientX", mOutX, 100, 100 );
+	showImage("GradientY", mOutY, 100 + w_ + 40, 100);
 	//cv::waitKey(0);
 }
 

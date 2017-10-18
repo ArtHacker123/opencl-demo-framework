@@ -121,7 +121,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PostBuildEvent>
-      <Command>If exist "*.cl" copy "*.cl" "$(OutDir)\"</Command>
+      <Command>If exist "*.cl" copy "*.cl" "$(OutDir)\"
+If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -142,7 +143,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>If exist "*.cl" copy "*.cl" "$(OutDir)\"</Command>
+      <Command>If exist "*.cl" copy "*.cl" "$(OutDir)\"
+If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -196,6 +198,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DivergenceDemo.cpp" />
     <ClCompile Include="GammaCorrection.cpp" />
     <ClCompile Include="GradientDemo.cpp" />
     <ClCompile Include="Parameters.cpp" />
@@ -210,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demo.h" />
+    <ClInclude Include="DivergenceDemo.h" />
     <ClInclude Include="GammaCorrection.h" />
     <ClInclude Include="GradientDemo.h" />
     <ClInclude Include="Parameters.h" />
@@ -221,6 +225,9 @@
     <ProjectReference Include="..\OpenClLib\OpenClLib.vcxproj">
       <Project>{f2080c9f-5214-4a5f-824c-e56ea05a8afd}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Desert.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
