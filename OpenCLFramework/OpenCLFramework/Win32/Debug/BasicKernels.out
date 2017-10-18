@@ -13,6 +13,8 @@ Device build done
 Kernel <gamma_correction> was successfully vectorized
 Kernel <gradient> was successfully vectorized
 Kernel <divergence> was successfully vectorized
+Kernel <l2_norm> was successfully vectorized
+Kernel <convolve> was successfully vectorized
 Done.
 gamma_correction info:
 	Maximum work-group size: 8192
@@ -29,6 +31,20 @@ gradient info:
 	Minimum amount of private memory: 0
 
 divergence info:
+	Maximum work-group size: 8192
+	Compiler work-group size: (0, 0, 0)
+	Local memory size: 0
+	Preferred multiple of work-group size: 128
+	Minimum amount of private memory: 0
+
+l2_norm info:
+	Maximum work-group size: 8192
+	Compiler work-group size: (0, 0, 0)
+	Local memory size: 0
+	Preferred multiple of work-group size: 128
+	Minimum amount of private memory: 0
+
+convolve info:
 	Maximum work-group size: 8192
 	Compiler work-group size: (0, 0, 0)
 	Local memory size: 0

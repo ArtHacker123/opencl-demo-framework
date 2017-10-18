@@ -201,6 +201,7 @@ If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
     <ClCompile Include="DivergenceDemo.cpp" />
     <ClCompile Include="GammaCorrection.cpp" />
     <ClCompile Include="GradientDemo.cpp" />
+    <ClCompile Include="LaplacianDemo.cpp" />
     <ClCompile Include="Parameters.cpp" />
     <ClCompile Include="try.cpp" />
   </ItemGroup>
@@ -216,6 +217,7 @@ If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
     <ClInclude Include="DivergenceDemo.h" />
     <ClInclude Include="GammaCorrection.h" />
     <ClInclude Include="GradientDemo.h" />
+    <ClInclude Include="LaplacianDemo.h" />
     <ClInclude Include="Parameters.h" />
   </ItemGroup>
   <ItemGroup>

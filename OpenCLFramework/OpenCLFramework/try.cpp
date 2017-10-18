@@ -21,6 +21,8 @@
 #include "GammaCorrection.h"
 #include "GradientDemo.h"
 #include "DivergenceDemo.h"
+#include "LaplacianDemo.h"
+
 #include <memory> //unique_ptr
 
 #include "oclobject.hpp"
@@ -39,6 +41,7 @@ using namespace cv;
 #define GAMMA_CORRECTION_DEMO 1
 #define GRADIENT_DEMO 2
 #define DIVERGENCE_DEMO 3
+#define LAPLACIAN_DEMO 4
 
 // consts
 const char *DEFAULT_IMAGE_PATH = "Desert.jpg";
@@ -83,6 +86,9 @@ int main(int argc, char** argv)
 		break;
 	case DIVERGENCE_DEMO:
 		demo = new DivergenceDemo(g_params);
+		break;
+	case LAPLACIAN_DEMO:
+		demo = new LaplacianDemo(g_params);
 		break;
 	default:
 		break;
@@ -253,6 +259,9 @@ void reload_parameters(Demo **demo, OpenCLBasic *oclobjects)
 				break;
 			case DIVERGENCE_DEMO:
 				*demo = new DivergenceDemo(g_params);
+				break;
+			case LAPLACIAN_DEMO:
+				*demo = new LaplacianDemo(g_params);
 				break;
 			default:
 				std::cerr << "illegal demo value" << std::endl;
