@@ -5,8 +5,11 @@
 #include "oclobject.hpp"
 #include "opencv2/opencv.hpp"
 #include "Helper.h"
+#include "PackedKernelS.h"
+
 // defines
 #define SUCCESS 1
+#define GET_TYPE(GRAY) ((GRAY) ? (CV_32FC1) : (CV_32FC3))
 
 using namespace cv;
 
@@ -15,6 +18,7 @@ class Demo
 protected:
 	Demo() {}
 	Demo(const Parameters &params) {}
+	bool gray_;
 public:
 	virtual void load_parameters(const Parameters &params) = 0;
 	//const Parameters &params;

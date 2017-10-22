@@ -30,7 +30,19 @@
     <ClCompile Include="DivergenceDemo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SharpeningDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="LaplacianDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GaussianBlurDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureDetectionDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PackedKernels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,7 +62,19 @@
     <ClInclude Include="DivergenceDemo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SharpeningDemo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="LaplacianDemo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GaussianBlurDemo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureDetectionDemo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PackedKernels.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,30 +3,32 @@
 #include "Parameters.h"
 #include <stdexcept>
 
-class LaplacianDemo :
+#define SHARPNESS_DEFAULT 1
+
+class SharpeningDemo :
 	public Demo
 {
 	Parameters *params_;
 	size_t numberOfValues_;
 	size_t nbytesO_;
-	cl_mem d_divOut, d_out, d_in, d_gradX, d_gradY;
+	cl_mem d_out, d_in, d_gradX, d_gradY;
 	const float* h_in;
 	float* h_out;
+	float sharpC_ = SHARPNESS_DEFAULT;
 	int w_, h_, nc_;
 	OpenCLProgramMultipleKernels *oprogram_;
 	cl_kernel gradKernel_;
 	cl_kernel divKernel_;
-	cl_kernel l2Kernel_;
 	OpenCLBasic *oclobjects_;
 public:
 
 	void load_parameters(const Parameters &params);
-	LaplacianDemo(Parameters &params)
+	SharpeningDemo(Parameters &params)
 	{
 		init_parameters(params);
 		load_parameters(params);
 	}
-	~LaplacianDemo();
+	~SharpeningDemo();
 	void init_parameters(Parameters &params);
 
 	void compile_program(OpenCLBasic *oclobjects);

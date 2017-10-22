@@ -1,7 +1,18 @@
 #include "GradientDemo.h"
 
 
-void GradientDemo::load_parameters(const Parameters &params) {}
+void GradientDemo::load_parameters(const Parameters &params)
+{
+	try
+	{
+		gray_ = params.get_bool("gray");
+	}
+	catch (const std::invalid_argument &e)
+	{
+		std::cerr << "arg does not exist: " << e.what() << std::endl;
+		exit(1);
+	}
+}
 
 void GradientDemo::init_parameters(Parameters &params)
 {
@@ -73,9 +84,7 @@ void GradientDemo::init_program_args(const float *input, int width,
 void GradientDemo::execute_program()
 {
 	//Declarations
-	cl_uint   workDim = 2;                      //We can use dimensions to organize data. Here
-	//we only got 1 dimension in our array, so we
-	//use 1.
+	cl_uint   workDim = 2;
 	//identfication values to work-items
 	size_t    localWorkSize[3] = { 32, 8, 0 };
 	size_t    globalWorkSize[3] = { ((w_ + localWorkSize[0] - 1) / localWorkSize[0])*localWorkSize[0],
@@ -115,8 +124,7 @@ void GradientDemo::execute_program()
 
 void GradientDemo::display_output()
 {
-	
-	Mat mOutX(h_, w_, CV_32FC3), mOutY(h_, w_, CV_32FC3);
+	Mat mOutX(h_, w_, GET_TYPE(gray_)), mOutY(h_, w_, GET_TYPE(gray_));
 	convert_layered_to_mat(mOutX, h_outX);
 	convert_layered_to_mat(mOutY, h_outY);
 	int nz = 0;

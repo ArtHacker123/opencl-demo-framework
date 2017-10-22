@@ -1,6 +1,9 @@
 
 #ifndef _HELPER_FOR_CL_CV_STUFF
 #define _HELPER_FOR_CL_CV_STUFF
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 #include <string>
 #include <sstream>
@@ -13,6 +16,9 @@ using namespace std;
 // parameter processing
 template<typename T>
 bool getParam(std::string param, T &var, int argc, char **argv);
+void kernel(float *dst, int r, float s);
+void scale(float *src, float *dst, int n);
+void showSizeableImage(string title, const cv::Mat &mat, int x, int y);
 
 // parameter processing: template specialization for T=bool
 template<>
@@ -47,5 +53,6 @@ bool getParam(std::string param, T &var, int argc, char **argv)
 }
 
 const char *getErrorString(cl_int error);
+
 
 #endif  // end of include guard

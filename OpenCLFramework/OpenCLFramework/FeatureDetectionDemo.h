@@ -1,32 +1,41 @@
 #pragma once
+
 #include "Demo.h"
 #include "Parameters.h"
 #include <stdexcept>
 
-class LaplacianDemo :
-	public Demo
+// defines
+#define RHO_DEFAULT 0.2f
+#define SIGMA_DEFAULT 0.2f
+#define F_DEFAULT 10.f
+
+
+class FeatureDetectionDemo : public Demo
 {
 	Parameters *params_;
+	float sigma_ = SIGMA_DEFAULT;
+	float rho_ = RHO_DEFAULT;
+	float f_ = F_DEFAULT;
 	size_t numberOfValues_;
 	size_t nbytesO_;
-	cl_mem d_divOut, d_out, d_in, d_gradX, d_gradY;
+	cl_mem d_out, d_in, d_kerS, d_kerR;
 	const float* h_in;
-	float* h_out;
+	float *h_out, *h_kerS, *h_kerR;
 	int w_, h_, nc_;
 	OpenCLProgramMultipleKernels *oprogram_;
-	cl_kernel gradKernel_;
-	cl_kernel divKernel_;
-	cl_kernel l2Kernel_;
+	cl_kernel gradKernel_, convKernel_, pointKernel_, featKernel_;
 	OpenCLBasic *oclobjects_;
+	ConvPack *convS_, *convR_;
+	GradientPack *gradPack_;
+	PointPack *pPack11_, *pPack12_, *pPack22_;
 public:
-
 	void load_parameters(const Parameters &params);
-	LaplacianDemo(Parameters &params)
+	FeatureDetectionDemo(Parameters &params)
 	{
 		init_parameters(params);
 		load_parameters(params);
 	}
-	~LaplacianDemo();
+	~FeatureDetectionDemo();
 	void init_parameters(Parameters &params);
 
 	void compile_program(OpenCLBasic *oclobjects);

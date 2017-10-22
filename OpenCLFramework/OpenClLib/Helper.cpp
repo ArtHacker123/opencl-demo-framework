@@ -66,7 +66,14 @@ void convert_mat_to_layered(float *aOut, const cv::Mat &mIn)
 void showImage(string title, const cv::Mat &mat, int x, int y)
 {
 	const char *wTitle = title.c_str();
-	cv::namedWindow(wTitle, 1);
+	cv::namedWindow(wTitle);
+	cvMoveWindow(wTitle, x, y);
+	cv::imshow(wTitle, mat);
+}
+void showSizeableImage(string title, const cv::Mat &mat, int x, int y)
+{
+	const char *wTitle = title.c_str();
+	cv::namedWindow(wTitle, CV_WINDOW_NORMAL);
 	cvMoveWindow(wTitle, x, y);
 	cv::imshow(wTitle, mat);
 }
@@ -146,5 +153,39 @@ const char *getErrorString(cl_int error)
 	case -1004: return "CL_D3D10_RESOURCE_ALREADY_ACQUIRED_KHR";
 	case -1005: return "CL_D3D10_RESOURCE_NOT_ACQUIRED_KHR";
 	default: return "Unknown OpenCL error";
+	}
+}
+
+void kernel(float *dst, int r, float s)
+{
+	int w = (2 * r) + 1;
+	float c = 1.f / (float)(2 * M_PI*s*s), p, sum = 0.f, add;
+	for (int a = -r; a <= r; ++a)
+	{
+		for (int b = -r; b <= r; ++b)
+		{
+			p = (float)((a*a) + (b*b)) / (float)(2 * s*s);
+			add = c*exp((float)(-1)*p);
+			dst[(a + r) + (b + r)*w] = add;
+			sum += add;
+		}
+	}
+	for (int i = 0; i < (2 * r + 1)*(2 * r + 1); ++i)
+	{
+		dst[i] /= sum;
+	}
+}
+
+void scale(float *src, float *dst, int n)
+{
+	float minV = 1, maxV = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		if (src[i] > maxV) maxV = src[i];
+		if (src[i] < minV) minV = src[i];
+	}
+	for (int i = 0; i < n; ++i)
+	{
+		dst[i] = (src[i] - minV) / (maxV - minV);
 	}
 }

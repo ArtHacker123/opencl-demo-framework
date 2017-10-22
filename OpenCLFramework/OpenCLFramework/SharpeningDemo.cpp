@@ -1,11 +1,12 @@
-#include "LaplacianDemo.h"
+#include "SharpeningDemo.h"
 
 
-void LaplacianDemo::load_parameters(const Parameters &params)
+void SharpeningDemo::load_parameters(const Parameters &params)
 {
 	try
 	{
 		gray_ = params.get_bool("gray");
+		sharpC_ = params.get_float("sharpness");
 	}
 	catch (const std::invalid_argument &e)
 	{
@@ -14,22 +15,23 @@ void LaplacianDemo::load_parameters(const Parameters &params)
 	}
 }
 
-void LaplacianDemo::init_parameters(Parameters &params)
+void SharpeningDemo::init_parameters(Parameters &params)
 {
 	params_ = &params;
+	shared_ptr<Parameter<float>> p_sharp(new Parameter<float>("sharpness", sharpC_, "s"));
+	params.push(std::move(p_sharp));
 }
 
-void LaplacianDemo::compile_program(OpenCLBasic *oclobjects)
+void SharpeningDemo::compile_program(OpenCLBasic *oclobjects)
 {
 	oclobjects_ = oclobjects;
 	// create program
 	oprogram_ = new OpenCLProgramMultipleKernels(*oclobjects_, L"BasicKernels.cl", "");
 	gradKernel_ = (*oprogram_)["gradient"];
 	divKernel_ = (*oprogram_)["divergence"];
-	l2Kernel_ = (*oprogram_)["l2_norm"];
 }
 
-void LaplacianDemo::init_program_args(const float *input, int width,
+void SharpeningDemo::init_program_args(const float *input, int width,
 	int height, int nchannels, size_t nbytesI)
 {
 	w_ = width;
@@ -57,17 +59,8 @@ void LaplacianDemo::init_program_args(const float *input, int width,
 		cout << "Error while initializing input data:" << getErrorString(result) << endl;
 		exit(1);
 	}
-	d_divOut = clCreateBuffer(oclobjects_->context, CL_MEM_READ_WRITE,
-		nbytesI, NULL, &result);
-	if (result != CL_SUCCESS)
-	{
-		cout << "Error while initializing output data:" << getErrorString(result) << endl;
-		exit(1);
-	}
 
-	numberOfValues_ = width*height;
-	nbytesO_ = sizeof(float)*numberOfValues_;
-
+	nbytesO_ = nbytesI;
 	d_out = clCreateBuffer(oclobjects_->context, CL_MEM_WRITE_ONLY,
 		nbytesO_, NULL, &result);
 	if (result != CL_SUCCESS)
@@ -94,7 +87,7 @@ void LaplacianDemo::init_program_args(const float *input, int width,
 	result = CL_SUCCESS;
 	result |= clSetKernelArg(divKernel_, 0, sizeof(cl_mem), &d_gradX);
 	result |= clSetKernelArg(divKernel_, 1, sizeof(cl_mem), &d_gradY);
-	result |= clSetKernelArg(divKernel_, 2, sizeof(cl_mem), &d_divOut);
+	result |= clSetKernelArg(divKernel_, 2, sizeof(cl_mem), &d_out);
 	result |= clSetKernelArg(divKernel_, 3, sizeof(int), &w_);
 	result |= clSetKernelArg(divKernel_, 4, sizeof(int), &h_);
 	result |= clSetKernelArg(divKernel_, 5, sizeof(int), &nc_);
@@ -103,21 +96,9 @@ void LaplacianDemo::init_program_args(const float *input, int width,
 		cout << "Error while setting divKernel_ arguments: " << getErrorString(result) << endl;
 		exit(1);
 	}
-
-	result = CL_SUCCESS;
-	result |= clSetKernelArg(l2Kernel_, 0, sizeof(cl_mem), &d_divOut);
-	result |= clSetKernelArg(l2Kernel_, 1, sizeof(cl_mem), &d_out);
-	result |= clSetKernelArg(l2Kernel_, 2, sizeof(int), &w_);
-	result |= clSetKernelArg(l2Kernel_, 3, sizeof(int), &h_);
-	result |= clSetKernelArg(l2Kernel_, 4, sizeof(int), &nc_);
-	if (result != CL_SUCCESS)
-	{
-		cout << "Error while setting l2Kernel_ arguments: " << getErrorString(result) << endl;
-		exit(1);
-	}
 }
 
-void LaplacianDemo::execute_program()
+void SharpeningDemo::execute_program()
 {
 	//Declarations
 	cl_uint   workDim = 2;                      //We can use dimensions to organize data.
@@ -147,16 +128,7 @@ void LaplacianDemo::execute_program()
 	}
 
 	clFinish(oclobjects_->queue);
-	// work per whole pixel instead of per channel value
-	globalWorkSize[1] = ((h_ + localWorkSize[1] - 1) / localWorkSize[1])*localWorkSize[1];
 
-	result = clEnqueueNDRangeKernel(oclobjects_->queue, l2Kernel_, workDim,
-		NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
-	if (result != CL_SUCCESS)
-	{
-		cerr << "Error while executing the divergence kernel: " << getErrorString(result) << endl;
-		exit(1);
-	}
 	//Declarations
 	cl_bool     blockingRead = CL_TRUE;
 	size_t offset = 0;
@@ -175,22 +147,29 @@ void LaplacianDemo::execute_program()
 		h_out, 0, NULL, &readResultsEvent);
 }
 
-void LaplacianDemo::display_output()
+void SharpeningDemo::display_output()
 {
 
-	Mat mOut(h_, w_, CV_32FC1), mIn(h_, w_, GET_TYPE(gray_));
+	Mat mOut(h_, w_, GET_TYPE(gray_)), mIn(h_, w_, GET_TYPE(gray_));
 	convert_layered_to_mat(mOut, h_out);
 	convert_layered_to_mat(mIn, h_in);
-
+	//cvtColor(mOut, mOut, cv::COLOR_RGB2GRAY);
+	/**int nz = 0;
+	for (unsigned int i = 0; i<numberOfValues_; i++)
+	{
+	nz += (h_out[i]) ? 1 : 0;
+	//if (h_out[i]) cout << h_out[i] << endl;
+	}*/
+	//cout << "total elem:" << numberOfValues_ << "\nnon zero:" << nz << endl;
 	showImage("Input", mIn, 100, 100);
-	showImage("Laplacian Norm", mOut, 100 + w_ + 40, 100);
+	showImage("Sharpened", mIn - (sharpC_*mOut), 100 + w_ + 40, 100);
+	//cv::waitKey(0);
 }
 
-void LaplacianDemo::deinit_program_args()
+void SharpeningDemo::deinit_program_args()
 {
 	free(h_out);
 	cl_int result = clReleaseMemObject(d_out);
-	result |= clReleaseMemObject(d_divOut);
 	result |= clReleaseMemObject(d_in);
 	result |= clReleaseMemObject(d_gradX);
 	result |= clReleaseMemObject(d_gradY);
@@ -201,12 +180,12 @@ void LaplacianDemo::deinit_program_args()
 	}
 }
 
-void LaplacianDemo::deinit_parameters()
+void SharpeningDemo::deinit_parameters()
 {
 	delete oprogram_;
 	//params_->clear();
 }
-LaplacianDemo::~LaplacianDemo()
+SharpeningDemo::~SharpeningDemo()
 {
 	deinit_parameters();
 }

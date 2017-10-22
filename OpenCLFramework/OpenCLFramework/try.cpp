@@ -21,7 +21,10 @@
 #include "GammaCorrection.h"
 #include "GradientDemo.h"
 #include "DivergenceDemo.h"
+#include "SharpeningDemo.h"
 #include "LaplacianDemo.h"
+#include "GaussianBlurDemo.h"
+#include "FeatureDetectionDemo.h"
 
 #include <memory> //unique_ptr
 
@@ -35,20 +38,24 @@ using namespace std;
 using namespace cv;
 
 // defines
+#define WINDOW_SIZE 400
 #define CAMERA_DEFAULT false
 #define GRAY_DEFAULT false
-#define DEMO_DEFAULT 0
+#define DEMO_DEFAULT 7
 #define GAMMA_CORRECTION_DEMO 1
 #define GRADIENT_DEMO 2
 #define DIVERGENCE_DEMO 3
-#define LAPLACIAN_DEMO 4
+#define SHARPENING_DEMO 4
+#define LAPLACIAN_DEMO 5
+#define GAUSSIAN_BLUR_DEMO 6
+#define FEATURE_DETECTION_DEMO 7
 
 // consts
 const char *DEFAULT_IMAGE_PATH = "Desert.jpg";
 
 // globals
 HANDLE g_paramHandler;
-int g_demo = GRADIENT_DEMO;
+int g_demo = DEMO_DEFAULT;
 bool g_quit = false;
 bool g_paramsChanged = true;
 bool g_camera = CAMERA_DEFAULT;
@@ -72,12 +79,10 @@ int main(int argc, char** argv)
 
 
 	init_parameters();
-
+	
 	Demo *demo;
 	switch (g_params.get_int("demo"))
 	{
-	case DEMO_DEFAULT:
-		cout << "in demo default" << endl;
 	case GAMMA_CORRECTION_DEMO:
 		demo = new GammaCorrection(g_params);
 		break;
@@ -87,8 +92,17 @@ int main(int argc, char** argv)
 	case DIVERGENCE_DEMO:
 		demo = new DivergenceDemo(g_params);
 		break;
+	case SHARPENING_DEMO:
+		demo = new SharpeningDemo(g_params);
+		break;
 	case LAPLACIAN_DEMO:
 		demo = new LaplacianDemo(g_params);
+		break;
+	case GAUSSIAN_BLUR_DEMO:
+		demo = new GaussianBlurDemo(g_params);
+		break;
+	case FEATURE_DETECTION_DEMO:
+		demo = new FeatureDetectionDemo(g_params);
 		break;
 	default:
 		break;
@@ -135,6 +149,7 @@ int main(int argc, char** argv)
 				camera >> mIn;
 				if (!mIn.empty()) break;
 			}
+			if (g_gray) cvtColor(mIn, mIn, cv::COLOR_RGB2GRAY);
 		}
 		else
 		{ 
@@ -147,6 +162,8 @@ int main(int argc, char** argv)
 			// check
 			if (mIn.data == NULL) { cerr << "ERROR: Could not load image " << image << endl; return 1; }
 		}
+		Size resz(WINDOW_SIZE, WINDOW_SIZE * mIn.rows / mIn.cols);
+		resize(mIn, mIn, resz);
 		//flip(mIn, mIn, 1);
 		// convert to float representation (opencv loads image values as single bytes by default)
 		mIn.convertTo(mIn, CV_32F);
@@ -249,8 +266,6 @@ void reload_parameters(Demo **demo, OpenCLBasic *oclobjects)
 			destroyAllWindows();
 			switch (g_demo)
 			{
-			case DEMO_DEFAULT:
-				cout << "in demo default" << endl;
 			case GAMMA_CORRECTION_DEMO:
 				*demo = new GammaCorrection(g_params);
 				break;
@@ -260,8 +275,17 @@ void reload_parameters(Demo **demo, OpenCLBasic *oclobjects)
 			case DIVERGENCE_DEMO:
 				*demo = new DivergenceDemo(g_params);
 				break;
+			case SHARPENING_DEMO:
+				*demo = new SharpeningDemo(g_params);
+				break;
 			case LAPLACIAN_DEMO:
 				*demo = new LaplacianDemo(g_params);
+				break;
+			case GAUSSIAN_BLUR_DEMO:
+				*demo = new GaussianBlurDemo(g_params);
+				break;
+			case FEATURE_DETECTION_DEMO:
+				*demo = new FeatureDetectionDemo(g_params);
 				break;
 			default:
 				std::cerr << "illegal demo value" << std::endl;

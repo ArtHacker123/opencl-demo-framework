@@ -199,9 +199,13 @@ If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DivergenceDemo.cpp" />
+    <ClCompile Include="FeatureDetectionDemo.cpp" />
     <ClCompile Include="GammaCorrection.cpp" />
+    <ClCompile Include="GaussianBlurDemo.cpp" />
     <ClCompile Include="GradientDemo.cpp" />
     <ClCompile Include="LaplacianDemo.cpp" />
+    <ClCompile Include="PackedKernels.cpp" />
+    <ClCompile Include="SharpeningDemo.cpp" />
     <ClCompile Include="Parameters.cpp" />
     <ClCompile Include="try.cpp" />
   </ItemGroup>
@@ -215,9 +219,13 @@ If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
   <ItemGroup>
     <ClInclude Include="Demo.h" />
     <ClInclude Include="DivergenceDemo.h" />
+    <ClInclude Include="FeatureDetectionDemo.h" />
     <ClInclude Include="GammaCorrection.h" />
+    <ClInclude Include="GaussianBlurDemo.h" />
     <ClInclude Include="GradientDemo.h" />
     <ClInclude Include="LaplacianDemo.h" />
+    <ClInclude Include="PackedKernels.h" />
+    <ClInclude Include="SharpeningDemo.h" />
     <ClInclude Include="Parameters.h" />
   </ItemGroup>
   <ItemGroup>

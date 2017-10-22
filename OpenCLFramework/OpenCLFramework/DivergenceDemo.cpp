@@ -5,7 +5,7 @@ void DivergenceDemo::load_parameters(const Parameters &params)
 {
 	try
 	{
-		//gamma = params.get_float("gamma");
+		gray_ = params.get_bool("gray");
 	}
 	catch (const std::invalid_argument &e)
 	{
@@ -147,8 +147,7 @@ void DivergenceDemo::execute_program()
 
 void DivergenceDemo::display_output()
 {
-
-	Mat mOut(h_, w_, CV_32FC3);
+	Mat mOut(h_, w_, GET_TYPE(gray_));
 	convert_layered_to_mat(mOut, h_out);
 	int nz = 0;
 	/**for (unsigned int i = 0; i<numberOfValues_; i++)
