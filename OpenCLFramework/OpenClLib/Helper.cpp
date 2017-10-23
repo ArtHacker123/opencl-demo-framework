@@ -23,7 +23,11 @@ bool getParam<bool>(std::string param, bool &var, int argc, char **argv)
 // opencv helpers
 void convert_layered_to_interleaved(float *aOut, const float *aIn, int w, int h, int nc)
 {
-	if (nc == 1) { memcpy(aOut, aIn, w*h*sizeof(float)); return; }
+	if (nc == 1) 
+	{
+		memcpy(aOut, aIn, w*h*sizeof(float));
+		return;
+	}
 	size_t nOmega = (size_t)w*h;
 	for (int y = 0; y<h; y++)
 	{

@@ -3,6 +3,7 @@
 #include "oclobject.hpp"
 #include "opencv2/opencv.hpp"
 #include "Helper.h"
+#include <errno.h>
 
 typedef OpenCLProgramMultipleKernels* Program;
 //convolve() kernel
@@ -12,7 +13,7 @@ private:
 	OpenCLBasic *oclobjects;
 	cl_kernel convKernel;
 	cl_mem d_ker, d_in;
-	int w, h, r, nc;
+	int w, h, r, nc_;
 	bool copyToHost_;
 	bool deallocateIn_;
 public:
@@ -70,3 +71,24 @@ public:
 	void exec(cl_mem nd_in = NULL);
 };
 
+//feature_detect() kernel
+struct FeatPack
+{
+private:
+	OpenCLBasic *oclobjects;
+	cl_kernel kernel_;
+	cl_mem d_in, d_in11, d_in12, d_in22;
+	int w, h, nc_;
+	bool copyToHost_;
+	bool deallocateIn_;
+	float alpha, beta;
+public:
+	// must be deallocated by caller if copyToHost_==true
+	cl_mem d_out;
+
+	FeatPack(OpenCLBasic *oclobjects, cl_kernel kernel, const float *h_in[4],
+				int w, int h, int nc, float alpha, float beta, bool copyToHost);
+	~FeatPack(){} // todo for all kernels deallocate d_outs'
+	float *exec(cl_mem nd_in = NULL, cl_mem nd_in11 = NULL,
+				cl_mem nd_in12 = NULL, cl_mem nd_in22 = NULL);
+};

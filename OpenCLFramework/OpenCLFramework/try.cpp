@@ -1,8 +1,8 @@
 
 // debug memleaks
-//#define _CRTDBG_MAP_ALLOC
-//#include <stdlib.h>
-//#include <crtdbg.h>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 // includes
 #include "basic.hpp"
@@ -38,7 +38,9 @@ using namespace std;
 using namespace cv;
 
 // defines
-#define WINDOW_SIZE 400
+#define WINDOW_WIDTH 500
+#define MAX_WINDOW_HEIGHT 500
+
 #define CAMERA_DEFAULT false
 #define GRAY_DEFAULT false
 #define DEMO_DEFAULT 7
@@ -75,7 +77,7 @@ unsigned int __stdcall parametersLoop(void*);
 
 int main(int argc, char** argv)
 {
-	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 
 	init_parameters();
@@ -162,7 +164,12 @@ int main(int argc, char** argv)
 			// check
 			if (mIn.data == NULL) { cerr << "ERROR: Could not load image " << image << endl; return 1; }
 		}
-		Size resz(WINDOW_SIZE, WINDOW_SIZE * mIn.rows / mIn.cols);
+		Size resz(WINDOW_WIDTH, WINDOW_WIDTH * mIn.rows / mIn.cols);
+		if (resz.height > MAX_WINDOW_HEIGHT)
+		{
+			resz.height = MAX_WINDOW_HEIGHT;
+			resz.width = resz.height * mIn.cols / mIn.rows;
+		}
 		resize(mIn, mIn, resz);
 		//flip(mIn, mIn, 1);
 		// convert to float representation (opencv loads image values as single bytes by default)

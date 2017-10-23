@@ -9,6 +9,8 @@ void FeatureDetectionDemo::load_parameters(const Parameters &params)
 		sigma_ = params.get_float("sigma");
 		rho_ = params.get_float("rho");
 		f_ = params.get_float("f");
+		alpha_ = params.get_float("alpha");
+		beta_ = params.get_float("beta");
 		gray_ = params.get_bool("gray");
 	}
 	catch (const std::invalid_argument &e)
@@ -29,9 +31,13 @@ void FeatureDetectionDemo::init_parameters(Parameters &params)
 	shared_ptr<Parameter<float>> p_rho(new Parameter<float>("rho", rho_, "r"));
 	shared_ptr<Parameter<float>> p_sigma(new Parameter<float>("sigma", sigma_, "s"));
 	shared_ptr<Parameter<float>> p_f(new Parameter<float>("f", f_, "f"));
+	shared_ptr<Parameter<float>> p_alpha(new Parameter<float>("alpha", alpha_, "a"));
+	shared_ptr<Parameter<float>> p_beta(new Parameter<float>("beta", beta_, "b"));
 	params.push(std::move(p_rho));
 	params.push(std::move(p_sigma));
 	params.push(std::move(p_f));
+	params.push(std::move(p_alpha));
+	params.push(std::move(p_beta));
 }
 
 void FeatureDetectionDemo::compile_program(OpenCLBasic *oclobjects)
@@ -42,7 +48,7 @@ void FeatureDetectionDemo::compile_program(OpenCLBasic *oclobjects)
 	gradKernel_ = (*oprogram_)["gradient"];
 	convKernel_ = (*oprogram_)["convolve"];
 	pointKernel_ = (*oprogram_)["pointwise_product"];
-	//featKernel_ = (*oprogram_)["feature_detect"];
+	featKernel_ = (*oprogram_)["feature_detect"];
 }
 
 void FeatureDetectionDemo::init_program_args(const float *input, int width,
@@ -61,21 +67,35 @@ void FeatureDetectionDemo::init_program_args(const float *input, int width,
 	kernel(h_kerS, rS, sigma_);
 	size_t kerbytesS = dS*dS*sizeof(float);
 
-	int rR = ceil(rho_ * 3);
+	int rR = ceil(sigma_ * 3); // todo decide if remove rho_ completely
 	int dR = (2 * rR) + 1;
 	h_kerR = new float[(size_t)(dR * dR)];
-	kernel(h_kerR, rR, rho_);
+	kernel(h_kerR, rR, sigma_);
 	size_t kerbytesR = dR*dR*sizeof(float);
+	int ncO = 1;
 
-	convS_ = new ConvPack(oclobjects_, convKernel_, h_in, h_kerS, w_,
+	d_in = clCreateBuffer(oclobjects_->context, CL_MEM_READ_ONLY |
+		CL_MEM_COPY_HOST_PTR, nbytesI, (void *)input, &result);
+	if (result != CL_SUCCESS)
+	{
+		cout << "Error while initializing input data:" << getErrorString(result) << endl;
+		exit(1);
+	}
+
+	convS_ = new ConvPack(oclobjects_, convKernel_, NULL, h_kerS, w_,
 		h_, nc_, rS, kerbytesS, false);
-	convR_ = new ConvPack(oclobjects_, convKernel_, NULL, h_kerR, w_,
-		h_, nc_, rR, kerbytesR, true);
+	convR11_ = new ConvPack(oclobjects_, convKernel_, NULL, h_kerR, w_,
+		h_, ncO, rR, kerbytesR, false);
+	convR12_ = new ConvPack(oclobjects_, convKernel_, NULL, h_kerR, w_,
+		h_, ncO, rR, kerbytesR, false);
+	convR22_ = new ConvPack(oclobjects_, convKernel_, NULL, h_kerR, w_,
+		h_, ncO, rR, kerbytesR, false);
 
 	gradPack_ = new GradientPack(oclobjects_, gradKernel_, NULL, w_, h_, nc_, false);
-	pPack11_ = new PointPack(oclobjects_, pointKernel_, NULL, w_, h_, nc_, true);
-	pPack12_ = new PointPack(oclobjects_, pointKernel_, NULL, w_, h_, nc_, true);
-	pPack22_ = new PointPack(oclobjects_, pointKernel_, NULL, w_, h_, nc_, true);
+	pPack11_ = new PointPack(oclobjects_, pointKernel_, NULL, w_, h_, nc_, false);
+	pPack12_ = new PointPack(oclobjects_, pointKernel_, NULL, w_, h_, nc_, false);
+	pPack22_ = new PointPack(oclobjects_, pointKernel_, NULL, w_, h_, nc_, false);
+	fPack_ = new FeatPack(oclobjects_, featKernel_, NULL, w_, h_, nc_, alpha_, beta_, true);
 }
 
 void FeatureDetectionDemo::execute_program()
@@ -91,7 +111,7 @@ void FeatureDetectionDemo::execute_program()
 	cl_event  kernelExecEvent;                  //The event for the execution of the kernel
 
 
-	convS_->conv();
+	convS_->conv(d_in);
 	cl_mem d_convOut = convS_->d_out;//todo deallocate
 	clFinish(oclobjects_->queue);
 
@@ -100,35 +120,39 @@ void FeatureDetectionDemo::execute_program()
 	cl_mem d_gradX = gradPack_->d_outX;
 	cl_mem d_gradY = gradPack_->d_outY;
 
-	h_out = pPack11_->exec(d_gradX, d_gradX);
+	pPack11_->exec(d_gradX, d_gradX);
 	clFinish(oclobjects_->queue);
 	pPack12_->exec(d_gradX, d_gradY);
 	clFinish(oclobjects_->queue);
 	pPack22_->exec(d_gradY, d_gradY);
 	clFinish(oclobjects_->queue);
 
+	cl_mem d_p11 = pPack11_->d_out;
+	cl_mem d_p12 = pPack12_->d_out;
+	cl_mem d_p22 = pPack22_->d_out;
+	convR11_->conv(d_p11);
+	clFinish(oclobjects_->queue);
+	convR12_->conv(d_p12);
+	clFinish(oclobjects_->queue);
+	convR22_->conv(d_p22);
+	clFinish(oclobjects_->queue);
 
-	//cl_bool     blockingRead = CL_TRUE;
-	//size_t offset = 0;
-	//cl_event    readResultsEvent;           //The event for the execution of the kernel
-
-
-	////Allocations
-	//size_t nbytesO = w_*h_*nc_*sizeof(float);
-	//float *h_out = (float*)malloc(nbytesO);
-
-	////Waiting for all commands to end. Note we coul have use the kernelExecEvent as an event
-	////to wait the end. But the clFinish function is simplier in this case.
-	//clFinish(oclobjects_->queue);
-
-	////Execution
-	//clEnqueueReadBuffer(oclobjects_->queue, d_gradX, blockingRead, offset, nbytesO,
-	//	h_out, 0, NULL, &readResultsEvent);
+	cl_mem d_p11C = convR11_->d_out;
+	cl_mem d_p12C = convR12_->d_out;
+	cl_mem d_p22C = convR22_->d_out;
+	h_out = fPack_->exec(d_in, d_p11C, d_p12C, d_p22C);
+	clFinish(oclobjects_->queue);
 
 	//h_out = convR_->conv(d_convOut);
 	cl_int result = clReleaseMemObject(d_convOut);
 	result |= clReleaseMemObject(d_gradX);
 	result |= clReleaseMemObject(d_gradY);
+	result |= clReleaseMemObject(d_p11);
+	result |= clReleaseMemObject(d_p12);
+	result |= clReleaseMemObject(d_p22);
+	result |= clReleaseMemObject(d_p11C);
+	result |= clReleaseMemObject(d_p12C);
+	result |= clReleaseMemObject(d_p22C);
 	if (result != CL_SUCCESS)
 	{
 		cout << "Error while deallocating device resources: " << getErrorString(result) << endl;
@@ -138,10 +162,17 @@ void FeatureDetectionDemo::execute_program()
 
 void FeatureDetectionDemo::display_output()
 {
-	//Mat mOut(h_, w_, GET_TYPE(gray_));
-	Mat mOut(h_, w_, CV_32FC1);
+	Mat mOut(h_, w_, GET_TYPE(gray_)), mIn(h_, w_, GET_TYPE(gray_));
+	//Mat mOut(h_, w_, CV_32FC1), mOut11(h_, w_, CV_32FC1), mOut12(h_, w_, CV_32FC1), mOut22(h_, w_, CV_32FC1);
 	convert_layered_to_mat(mOut, h_out);
+	convert_layered_to_mat(mIn, h_in);
+	/*convert_layered_to_mat(mOut11, h_out11);
+	convert_layered_to_mat(mOut12, h_out12);
+	convert_layered_to_mat(mOut22, h_out22);
 	mOut *= f_;
+	mOut11 *= f_;
+	mOut12 *= f_;
+	mOut22 *= f_;*/
 	int nz = 0;
 	for (unsigned int i = 0; i<numberOfValues_; i++)
 	{
@@ -149,23 +180,33 @@ void FeatureDetectionDemo::display_output()
 		//if (h_out[i]) cout << h_out[i] << endl;
 	}
 	//cout << "total elem:" << numberOfValues_ << "\nnon zero:" << nz << endl;
-	showImage("Output", mOut, 100, 100);
+	showImage("Input", mIn, 100, 100);
+	showImage("Output", mOut, 100+w_+40, 100);
+	/*showImage("Output11", mOut11, 100+w_+40, 100);
+	showImage("Output12", mOut12, 100, 100 + h_ + 40);
+	showImage("Output22", mOut22, 100 + w_ + 40, 100 + h_ + 40);*/
 	//cv::waitKey(0);
 }
 
 void FeatureDetectionDemo::deinit_program_args()
 {
-	free(h_out);
-	free(h_kerS);
-	free(h_kerR);
-	delete convR_;
+	delete[] h_out;
+	/*free(h_out11);
+	free(h_out12);
+	free(h_out22);*/
+	delete[] h_kerS;
+	delete[] h_kerR;
+	delete convR11_;
+	delete convR12_;
+	delete convR22_;
 	delete convS_;
 	delete gradPack_;
 	delete pPack11_;
 	delete pPack12_;
 	delete pPack22_;
-	/*
-	cl_int result = clReleaseMemObject(d_out);
+	delete fPack_;
+	
+	/*cl_int result = clReleaseMemObject(d_out);
 	result |= clReleaseMemObject(d_in);
 	if (result != CL_SUCCESS)
 	{

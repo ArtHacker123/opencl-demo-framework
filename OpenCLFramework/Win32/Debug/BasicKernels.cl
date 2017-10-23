@@ -1,8 +1,47 @@
 
 #define IDX3(x, y, c, w, h) (x)+((y)*w)+((c)*w*h)
-#define IDX2(x, y, w) (x)+((y)*(w))
+#define IDX2(x, y, w) (x)+((y)*(w))
+#define COLOR_MIN 0.f
+#define COLOR_MAX 255.f
+#define DARKENING_FACTOR .5f
 
 float get_mat_val(__global float *src, int x, int y, int c, int w, int h);
+void eigen_values(const float *src, float *res);
+
+__kernel void feature_detect(__global const float *src, __global const float *src11,
+								__global const float *src12, __global const float *src22,
+								__global float *dst, int w, int h, float alpha, float beta)
+{
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int idx = IDX2(x, y, w);
+    float eigenvals[2], tensor[4];
+    if (x<w && y<h)
+    {
+        tensor[0] = src11[idx];
+        tensor[1] = tensor[2] = src12[idx];
+        tensor[3] = src22[idx];
+        eigen_values(tensor, eigenvals);
+        if (alpha<=eigenvals[0])//red= 255 - ((c+2)/3 * 255)
+        {
+            dst[IDX3(x, y, 0, w, h)] = COLOR_MAX;
+            dst[IDX3(x, y, 1, w, h)] = COLOR_MIN;
+            dst[IDX3(x, y, 2, w, h)] = COLOR_MIN;
+        }
+        else if (beta>=eigenvals[0] && alpha<=eigenvals[1])//yellow = ((4-c)/3)*255 assuming beta<alpha
+        {
+            dst[IDX3(x, y, 0, w, h)] = COLOR_MAX;
+            dst[IDX3(x, y, 1, w, h)] = COLOR_MAX;
+            dst[IDX3(x, y, 2, w, h)] = COLOR_MIN;
+        }
+        else
+        {
+            dst[IDX3(x, y, 0, w, h)] = src[IDX3(x, y, 0, w, h)]*DARKENING_FACTOR;
+            dst[IDX3(x, y, 1, w, h)] = src[IDX3(x, y, 1, w, h)]*DARKENING_FACTOR;
+            dst[IDX3(x, y, 2, w, h)] = src[IDX3(x, y, 2, w, h)]*DARKENING_FACTOR;
+        }
+    }
+}
 
 __kernel void pointwise_product(__global const float *srcA, __global const float *srcB,								__global float *dst, int w, int h, int nc)
 {
@@ -142,3 +181,12 @@ float get_mat_val(__global float *src, int x, int y, int c, int w, int h)
     return src[IDX3(xt, yt, c, w, h)];
 }
 
+
+void eigen_values(const float *src, float *res)
+{
+    float t = src[0]+src[3];
+    float d = (src[0]*src[3]) - (src[1]*src[2]);
+    float p = sqrt(((t*t)/4.f)-d);
+    res[0] = 0.5*t-p;
+    res[1] = 0.5*t+p;
+}
