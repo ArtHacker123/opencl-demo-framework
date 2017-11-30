@@ -45,7 +45,7 @@ __kernel void feature_detect(__global const float *src, __global const float *sr
 
 __kernel void pointwise_product(__global const float *srcA, __global const float *srcB,								__global float *dst, int w, int h, int nc)
 {
-    int x = get_global_id(0);
+    size_t x = get_global_id(0);
     int y = get_global_id(1);
     size_t idx = IDX2(x,y,w);//x+y*w
 	dst[5]=7.8;

@@ -1,11 +1,21 @@
 #ifndef _DEMO_INTERFACE_
 #define _DEMO_INTERFACE_
+#define _CRTDBG_MAP_ALLOC
 // includes
 #include "Parameters.h"
 #include "oclobject.hpp"
 #include "opencv2/opencv.hpp"
 #include "Helper.h"
 #include "PackedKernelS.h"
+
+#ifdef _DEBUG
+#define MYDEBUG_NEW   new( _NORMAL_BLOCK, __FILE__, __LINE__)
+#define new MYDEBUG_NEW
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+//allocations to be of _CLIENT_BLOCK type
+#else
+#define MYDEBUG_NEW
+#endif // _DEBUG
 
 // defines
 #define SUCCESS 1

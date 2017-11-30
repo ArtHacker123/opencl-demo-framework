@@ -8,6 +8,8 @@ Parameters::Parameters()
 
 Parameters::~Parameters()
 {
+	cout << "destroying params" << endl;
+	complete_clear();
 }
 
 
@@ -43,6 +45,15 @@ void Parameters::clear()
 	//for (auto it : iparams) delete it;
 	iparams.clear();
 	iparams.push_back(dparam);
+}
+
+
+
+void Parameters::complete_clear()
+{
+	fparams.clear();
+	bparams.clear();
+	iparams.clear();
 }
 
 

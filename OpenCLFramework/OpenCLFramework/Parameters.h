@@ -1,5 +1,13 @@
 #pragma once
-
+#define _CRTDBG_MAP_ALLOC
+#ifdef _DEBUG
+#define MYDEBUG_NEW   new( _NORMAL_BLOCK, __FILE__, __LINE__)
+#define new MYDEBUG_NEW
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+//allocations to be of _CLIENT_BLOCK type
+#else
+#define MYDEBUG_NEW
+#endif // _DEBUG
 #include <iostream>
 #include <string>
 #include <vector>
@@ -23,9 +31,10 @@ struct Parameter
 	std::string key;
 	T value;
 
-	Parameter(string nam, T val, string k) : name(nam), value(val), key(k) {}
+	Parameter(string nam, T val, string k) : name(nam), value(val), key(k) { cout << "init:" << name << endl; }
 
-
+	~Parameter(){ cout << "dest:" << name
+		<< endl; }
 	friend std::ostream& operator<< (std::ostream& stream, const Parameter<T>& param);
 	friend std::ostream& operator<< (std::ostream& stream, const Parameter<bool>& param);
 
@@ -45,7 +54,7 @@ class Parameters
 {
 	std::vector<std::shared_ptr<Parameter<bool>>> bparams;
 	std::vector<std::shared_ptr<Parameter<int>>> iparams;
-	std::vector<shared_ptr<Parameter<float>>> fparams;
+	std::vector<std::shared_ptr<Parameter<float>>> fparams;
 public:
 	Parameters();
 
@@ -99,6 +108,7 @@ public:
 	void change(string key, string val);
 
 	void clear();
+	void complete_clear();
 };
 
 class ParameterChangedException : public std::exception

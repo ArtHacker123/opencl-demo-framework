@@ -83,10 +83,10 @@ float *FeatPack::exec(cl_mem nd_in, cl_mem nd_in11, cl_mem nd_in12, cl_mem nd_in
 	//Execution
 	result = clEnqueueNDRangeKernel(oclobjects->queue, kernel_, workDim,
 		NULL, globalWorkSize,
-		localWorkSize, 0, NULL, &kernelExecEvent);
+		localWorkSize, 0, NULL, NULL);
 	if (result != CL_SUCCESS)
 	{
-		cout << "Error while executing the kernel: " << getErrorString(result) << endl;
+		cout << "FeatPack::Error while executing the kernel: " << getErrorString(result) << endl;
 		exit(1);
 	}
 	clFinish(oclobjects->queue);
@@ -211,7 +211,7 @@ float *ConvPack::conv(cl_mem nd_in)
 	//Execution
 	result = clEnqueueNDRangeKernel(oclobjects->queue, convKernel, workDim,
 		NULL, globalWorkSize,
-		localWorkSize, 0, NULL, &kernelExecEvent);
+		localWorkSize, 0, NULL, NULL);
 	if (result != CL_SUCCESS)
 	{
 		cout << "ConvPack::Error while executing the kernel: " << getErrorString(result) << endl;
@@ -329,7 +329,7 @@ float *PointPack::exec(cl_mem nd_inA, cl_mem nd_inB)
 	//Execution
 	result = clEnqueueNDRangeKernel(oclobjects->queue, kernel_, workDim,
 		NULL, globalWorkSize,
-		localWorkSize, 0, NULL, &kernelExecEvent);
+		localWorkSize, 0, NULL, NULL);
 	if (result != CL_SUCCESS)
 	{
 		cout << "PointPack::Error while executing the kernel: " << getErrorString(result) << endl;
@@ -443,7 +443,7 @@ void GradientPack::exec(cl_mem nd_in)
 	//Execution
 	result = clEnqueueNDRangeKernel(oclobjects->queue, kernel_, workDim,
 		NULL, globalWorkSize,
-		localWorkSize, 0, NULL, &kernelExecEvent);
+		localWorkSize, 0, NULL, NULL);
 	if (result != CL_SUCCESS)
 	{
 		cout << "GradientPack::Error while executing the kernel: " << getErrorString(result) << endl;

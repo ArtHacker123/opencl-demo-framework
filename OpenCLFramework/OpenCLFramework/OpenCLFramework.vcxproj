@@ -122,7 +122,8 @@
     </Link>
     <PostBuildEvent>
       <Command>If exist "*.cl" copy "*.cl" "$(OutDir)\"
-If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
+If exist "*.jpg" copy "*.jpg" "$(OutDir)\"
+If exist "*.xml" copy "*.xml" "$(OutDir)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -144,7 +145,8 @@ If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
     </Link>
     <PostBuildEvent>
       <Command>If exist "*.cl" copy "*.cl" "$(OutDir)\"
-If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
+If exist "*.jpg" copy "*.jpg" "$(OutDir)\"
+If exist "*.xml" copy "*.xml" "$(OutDir)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -199,6 +201,7 @@ If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DivergenceDemo.cpp" />
+    <ClCompile Include="FaceTrackingDemo.cpp" />
     <ClCompile Include="FeatureDetectionDemo.cpp" />
     <ClCompile Include="GammaCorrection.cpp" />
     <ClCompile Include="GaussianBlurDemo.cpp" />
@@ -219,6 +222,7 @@ If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
   <ItemGroup>
     <ClInclude Include="Demo.h" />
     <ClInclude Include="DivergenceDemo.h" />
+    <ClInclude Include="FaceTrackingDemo.h" />
     <ClInclude Include="FeatureDetectionDemo.h" />
     <ClInclude Include="GammaCorrection.h" />
     <ClInclude Include="GaussianBlurDemo.h" />
@@ -238,6 +242,9 @@ If exist "*.jpg" copy "*.jpg" "$(OutDir)\"</Command>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Desert.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="haarcascade_frontalface_alt.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

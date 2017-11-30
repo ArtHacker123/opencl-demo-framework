@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
+#ifdef _DEBUG
+#define MYDEBUG_NEW   new( _NORMAL_BLOCK, __FILE__, __LINE__)
+#define new MYDEBUG_NEW
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+//allocations to be of _CLIENT_BLOCK type
+#else
+#define MYDEBUG_NEW
+#endif // _DEBUG
 // includes
 #include "basic.hpp"
 #include <iostream>
@@ -25,12 +33,14 @@
 #include "LaplacianDemo.h"
 #include "GaussianBlurDemo.h"
 #include "FeatureDetectionDemo.h"
+#include "FaceTrackingDemo.h"
 
 #include <memory> //unique_ptr
 
 #include "oclobject.hpp"
 #include "cmdparser.hpp"
 #include "Helper.h"
+
 
 
 // usings
@@ -41,9 +51,9 @@ using namespace cv;
 #define WINDOW_WIDTH 500
 #define MAX_WINDOW_HEIGHT 500
 
-#define CAMERA_DEFAULT false
+#define CAMERA_DEFAULT true
 #define GRAY_DEFAULT false
-#define DEMO_DEFAULT 7
+#define DEMO_DEFAULT 5
 #define GAMMA_CORRECTION_DEMO 1
 #define GRADIENT_DEMO 2
 #define DIVERGENCE_DEMO 3
@@ -51,6 +61,7 @@ using namespace cv;
 #define LAPLACIAN_DEMO 5
 #define GAUSSIAN_BLUR_DEMO 6
 #define FEATURE_DETECTION_DEMO 7
+#define FACE_TRACKING_DEMO 8
 
 // consts
 const char *DEFAULT_IMAGE_PATH = "Desert.jpg";
@@ -77,7 +88,7 @@ unsigned int __stdcall parametersLoop(void*);
 
 int main(int argc, char** argv)
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 
 	init_parameters();
@@ -105,6 +116,9 @@ int main(int argc, char** argv)
 		break;
 	case FEATURE_DETECTION_DEMO:
 		demo = new FeatureDetectionDemo(g_params);
+		break;
+	case FACE_TRACKING_DEMO:
+		demo = new FaceTrackingDemo(g_params);
 		break;
 	default:
 		break;
@@ -141,7 +155,7 @@ int main(int argc, char** argv)
 					cerr << "Couldn't open camera" << endl;
 					return -1;
 				}
-				camera.set(CV_CAP_PROP_FRAME_WIDTH, camW);
+				camera.set(CV_CAP_PROP_FRAME_WIDTH, camW); //todo decide on proper size
 				camera.set(CV_CAP_PROP_FRAME_HEIGHT, camH);
 				g_cameraOpen = true;
 			}
@@ -155,6 +169,11 @@ int main(int argc, char** argv)
 		}
 		else
 		{ 
+			if (g_cameraOpen)
+			{
+				camera.release();
+				g_cameraOpen = false;
+			}
 			bool ret = getParam("i", image, argc, argv);
 			if (!ret) if (argc > 1) { cerr << "ERROR: illegal arguments" << endl; exit(1); }			if (argc <= 1) image = string(DEFAULT_IMAGE_PATH);
 			//image = "C:\\Wasted.jpg";
@@ -215,6 +234,8 @@ int main(int argc, char** argv)
     
 	delete demo;
 	deinit_parameters();
+	g_params.complete_clear();
+	_CrtDumpMemoryLeaks();
 	//_CrtDumpMemoryLeaks();
 }
 
@@ -248,7 +269,6 @@ unsigned int __stdcall parametersLoop(void*)
 		{
 			delete g_demo;
 		}*/
-		g_cameraOpen = false;
 		g_paramsChanged = true;
 		getline(cin, line);
 		ss = stringstream(line);
@@ -294,6 +314,9 @@ void reload_parameters(Demo **demo, OpenCLBasic *oclobjects)
 			case FEATURE_DETECTION_DEMO:
 				*demo = new FeatureDetectionDemo(g_params);
 				break;
+			case FACE_TRACKING_DEMO:
+				*demo = new FaceTrackingDemo(g_params);
+				break;
 			default:
 				std::cerr << "illegal demo value" << std::endl;
 				exit(1);
@@ -316,12 +339,12 @@ void init_parameters()
 	cout << "after parametersInit()" << endl;
 
 	//unique_ptr<Parameter<int>> demo_(new Parameter<int>("demo", g_demo, "demo"));
-	std::shared_ptr<Parameter<int>> demo_(new Parameter<int>("demo", g_demo, "demo"));
+	std::shared_ptr<Parameter<int>> demo(new Parameter<int>("demo", g_demo, "demo"));
 	std::shared_ptr<Parameter<bool>> cam(new Parameter<bool>("camera", g_camera, "c"));
 	std::shared_ptr<Parameter<bool>> gray(new Parameter<bool>("gray", g_gray, "gr"));
-	g_params.push(std::move(demo_));
-	g_params.push(cam);
-	g_params.push(gray);
+	g_params.push(std::move(demo));
+	g_params.push(std::move(cam));
+	g_params.push(std::move(gray));
 	cout << "params:" << endl;
 	cout << g_params << endl;
 }

@@ -153,6 +153,7 @@ void FeatureDetectionDemo::execute_program()
 	result |= clReleaseMemObject(d_p11C);
 	result |= clReleaseMemObject(d_p12C);
 	result |= clReleaseMemObject(d_p22C);
+	result |= clReleaseMemObject(d_in);
 	if (result != CL_SUCCESS)
 	{
 		cout << "Error while deallocating device resources: " << getErrorString(result) << endl;
@@ -181,7 +182,7 @@ void FeatureDetectionDemo::display_output()
 	}
 	//cout << "total elem:" << numberOfValues_ << "\nnon zero:" << nz << endl;
 	showImage("Input", mIn, 100, 100);
-	showImage("Output", mOut, 100+w_+40, 100);
+	showImage("Feature detection", mOut, 100+w_+40, 100);
 	/*showImage("Output11", mOut11, 100+w_+40, 100);
 	showImage("Output12", mOut12, 100, 100 + h_ + 40);
 	showImage("Output22", mOut22, 100 + w_ + 40, 100 + h_ + 40);*/
@@ -207,7 +208,7 @@ void FeatureDetectionDemo::deinit_program_args()
 	delete fPack_;
 	
 	/*cl_int result = clReleaseMemObject(d_out);
-	result |= clReleaseMemObject(d_in);
+	cl_int result = clReleaseMemObject(d_in);
 	if (result != CL_SUCCESS)
 	{
 		cout << "Error while deallocating device resources: " << getErrorString(result) << endl;
@@ -217,11 +218,14 @@ void FeatureDetectionDemo::deinit_program_args()
 
 void FeatureDetectionDemo::deinit_parameters()
 {
+	
 	delete oprogram_;
 	//params_->clear();
 	params_->rem_float("s");
 	params_->rem_float("r");
 	params_->rem_float("f");
+	params_->rem_float("a");
+	params_->rem_float("b");
 }
 FeatureDetectionDemo::~FeatureDetectionDemo()
 {

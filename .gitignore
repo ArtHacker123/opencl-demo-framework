@@ -6,3 +6,5 @@
 *.log
 *.tlog
 *.cache
+*.exe
+*.xml
