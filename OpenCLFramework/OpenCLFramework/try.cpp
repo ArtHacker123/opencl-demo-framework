@@ -126,9 +126,17 @@ int main(int argc, char** argv)
 	
 	// Create the necessary OpenCL objects up to device queue.
 	OpenCLBasic oclobjects("0", "gpu");
+	try
+	{
 
-	// create program
-	demo->compile_program(&oclobjects);
+		// create program
+		demo->compile_program(&oclobjects);
+	}
+	catch (const exception& e)
+	{
+		cout << "in main::compile caught:" << e.what() << endl << "for demo:" << g_demo << endl;
+		exit(1);
+	}
 
 	string image = "";
 	Mat mIn;
