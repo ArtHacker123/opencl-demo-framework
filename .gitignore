@@ -8,5 +8,8 @@
 *.cache
 *.exe
 *.xml
+*.suo
+*.pdf
+*.jpg
 DemoFramework[/\]
 OpenCLFramework.exe

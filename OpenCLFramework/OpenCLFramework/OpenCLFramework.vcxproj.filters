@@ -45,6 +45,9 @@
     <ClCompile Include="PackedKernels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FaceTrackingDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parameters.h">
@@ -77,6 +80,9 @@
     <ClInclude Include="PackedKernels.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FaceTrackingDemo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Intel_OpenCL_Build_Rules Include="BasicKernels.cl">
@@ -87,5 +93,8 @@
     <Image Include="Desert.jpg">
       <Filter>Source Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="haarcascade_frontalface_alt.xml" />
   </ItemGroup>
 </Project>

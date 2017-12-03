@@ -24,7 +24,7 @@ public:
 				const float *h_in, float *h_ker, int w, int h, int nc,
 				int r, size_t kerbytes, bool copyToHost);
 	~ConvPack(){}
-	float *conv(cl_mem nd_in = NULL);
+	float *exec(cl_mem nd_in = NULL);
 };
 
 //pointwise_product() kernel

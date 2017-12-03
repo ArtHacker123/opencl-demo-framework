@@ -111,7 +111,7 @@ void FeatureDetectionDemo::execute_program()
 	cl_event  kernelExecEvent;                  //The event for the execution of the kernel
 
 
-	convS_->conv(d_in);
+	convS_->exec(d_in);
 	cl_mem d_convOut = convS_->d_out;//todo deallocate
 	clFinish(oclobjects_->queue);
 
@@ -130,11 +130,11 @@ void FeatureDetectionDemo::execute_program()
 	cl_mem d_p11 = pPack11_->d_out;
 	cl_mem d_p12 = pPack12_->d_out;
 	cl_mem d_p22 = pPack22_->d_out;
-	convR11_->conv(d_p11);
+	convR11_->exec(d_p11);
 	clFinish(oclobjects_->queue);
-	convR12_->conv(d_p12);
+	convR12_->exec(d_p12);
 	clFinish(oclobjects_->queue);
-	convR22_->conv(d_p22);
+	convR22_->exec(d_p22);
 	clFinish(oclobjects_->queue);
 
 	cl_mem d_p11C = convR11_->d_out;
@@ -143,7 +143,7 @@ void FeatureDetectionDemo::execute_program()
 	h_out = fPack_->exec(d_in, d_p11C, d_p12C, d_p22C);
 	clFinish(oclobjects_->queue);
 
-	//h_out = convR_->conv(d_convOut);
+	//h_out = convR_->exec(d_convOut);
 	cl_int result = clReleaseMemObject(d_convOut);
 	result |= clReleaseMemObject(d_gradX);
 	result |= clReleaseMemObject(d_gradY);

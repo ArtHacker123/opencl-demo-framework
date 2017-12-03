@@ -183,7 +183,7 @@ ConvPack::ConvPack(OpenCLBasic *oclobjects, cl_kernel convKernel,
 }
 
 
-float *ConvPack::conv(cl_mem nd_in)
+float *ConvPack::exec(cl_mem nd_in)
 {
 	if (nd_in) d_in = nd_in;
 	cl_int result = CL_SUCCESS;

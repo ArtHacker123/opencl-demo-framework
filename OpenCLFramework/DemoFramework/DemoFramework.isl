@@ -927,7 +927,7 @@
 		<row><td>DatabaseFolder</td><td>ChangeFolder</td><td>SpawnDialog</td><td>InstallChangeFolder</td><td>1</td><td>1</td></row>
 		<row><td>DatabaseFolder</td><td>ChangeFolder</td><td>[_BrowseProperty]</td><td>DATABASEDIR</td><td>1</td><td>2</td></row>
 		<row><td>DatabaseFolder</td><td>Next</td><td>NewDialog</td><td>SetupType</td><td>1</td><td>1</td></row>
-		<row><td>DestinationFolder</td><td>Back</td><td>NewDialog</td><td>LicenseAgreement</td><td>NOT Installed</td><td>0</td></row>
+		<row><td>DestinationFolder</td><td>Back</td><td>NewDialog</td><td>InstallWelcome</td><td>NOT Installed</td><td>0</td></row>
 		<row><td>DestinationFolder</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>1</td></row>
 		<row><td>DestinationFolder</td><td>ChangeFolder</td><td>SpawnDialog</td><td>InstallChangeFolder</td><td>1</td><td>1</td></row>
 		<row><td>DestinationFolder</td><td>ChangeFolder</td><td>[_BrowseProperty]</td><td>INSTALLDIR</td><td>1</td><td>2</td></row>
@@ -944,7 +944,7 @@
 		<row><td>InstallChangeFolder</td><td>Up</td><td>DirectoryListUp</td><td>0</td><td>1</td><td>0</td></row>
 		<row><td>InstallWelcome</td><td>Back</td><td>NewDialog</td><td>SplashBitmap</td><td>Display_IsBitmapDlg</td><td>0</td></row>
 		<row><td>InstallWelcome</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
-		<row><td>InstallWelcome</td><td>Next</td><td>NewDialog</td><td>LicenseAgreement</td><td>1</td><td>0</td></row>
+		<row><td>InstallWelcome</td><td>Next</td><td>NewDialog</td><td>DestinationFolder</td><td>1</td><td>0</td></row>
 		<row><td>LicenseAgreement</td><td>Back</td><td>NewDialog</td><td>InstallWelcome</td><td>1</td><td>0</td></row>
 		<row><td>LicenseAgreement</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
 		<row><td>LicenseAgreement</td><td>ISPrintButton</td><td>DoAction</td><td>ISPrint</td><td>1</td><td>0</td></row>
@@ -1904,6 +1904,7 @@
 		<col def="S72">ISComponentSubFolder_</col>
 		<row><td>basickernels.cl</td><td>ISX_DEFAULTCOMPONENT</td><td>BASICK~1.CL|BasicKernels.cl</td><td>0</td><td/><td/><td/><td>1</td><td>D:\openCL\OpenCLFramework\Win32\Release\BasicKernels.cl</td><td>1</td><td/></row>
 		<row><td>desert.jpg</td><td>ISX_DEFAULTCOMPONENT</td><td>Desert.jpg</td><td>0</td><td/><td/><td/><td>1</td><td>D:\openCL\OpenCLFramework\Win32\Release\Desert.jpg</td><td>1</td><td/></row>
+		<row><td>haarcascade_frontalface_alt.</td><td>ISX_DEFAULTCOMPONENT</td><td>HAARCA~1.XML|haarcascade_frontalface_alt.xml</td><td>0</td><td/><td/><td/><td>1</td><td>D:\openCL\OpenCLFramework\dependencies\haarcascade_frontalface_alt.xml</td><td>1</td><td/></row>
 		<row><td>openclframework.exe</td><td>OpenCLFramework.exe</td><td>OPENCL~1.EXE|OpenCLFramework.exe</td><td>0</td><td/><td/><td/><td>1</td><td>D:\openCL\OpenCLFramework\Win32\Release\OpenCLFramework.exe</td><td>1</td><td/></row>
 		<row><td>opencllib.lib</td><td>ISX_DEFAULTCOMPONENT</td><td>OPENCL~1.LIB|OpenClLib.lib</td><td>0</td><td/><td/><td/><td>1</td><td>D:\openCL\OpenCLFramework\Win32\Release\OpenClLib.lib</td><td>1</td><td/></row>
 		<row><td>opencv_annotation.exe</td><td>opencv_annotation.exe</td><td>OPENCV~1.EXE|opencv_annotation.exe</td><td>0</td><td/><td/><td/><td>1</td><td>D:\openCL\OpenCLFramework\dependencies\opencv_annotation.exe</td><td>1</td><td/></row>
@@ -2648,7 +2649,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>theroyn</td><td>0</td><td/><td>371549395</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>theroyn</td><td>0</td><td/><td>505794609</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>-1926949138</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>-1926949138</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_OS</td><td>1033</td><td>The operating system is not adequate for running [ProductName].</td><td>0</td><td/><td>-1926949138</td></row>
@@ -3759,8 +3760,8 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>-1926949138</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>-1926949138</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>-1926945042</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.theroyn.com</td><td>0</td><td/><td>371549395</td></row>
-		<row><td>ID_STRING3</td><td>1033</td><td>theroyn</td><td>0</td><td/><td>371549395</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.theroyn.com</td><td>0</td><td/><td>505796657</td></row>
+		<row><td>ID_STRING3</td><td>1033</td><td>theroyn</td><td>0</td><td/><td>505794609</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>-1926949138</td></row>
 	</table>
 

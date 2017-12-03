@@ -23,6 +23,7 @@ void GradientDemo::init_parameters(Parameters &params)
 
 void GradientDemo::compile_program(OpenCLBasic *oclobjects)
 {
+
 	oclobjects_ = oclobjects;
 	// create program
 	oprogram_ = new OpenCLProgramMultipleKernels(*oclobjects_, L"BasicKernels.cl", "");

@@ -1,17 +1,17 @@
 
 // debug memleaks
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
 
-#ifdef _DEBUG
-#define MYDEBUG_NEW   new( _NORMAL_BLOCK, __FILE__, __LINE__)
-#define new MYDEBUG_NEW
-// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-//allocations to be of _CLIENT_BLOCK type
-#else
-#define MYDEBUG_NEW
-#endif // _DEBUG
+//#ifdef _DEBUG
+//#define MYDEBUG_NEW   new( _NORMAL_BLOCK, __FILE__, __LINE__)
+//#define new MYDEBUG_NEW
+//// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+////allocations to be of _CLIENT_BLOCK type
+//#else
+//#define MYDEBUG_NEW
+//#endif // _DEBUG
 // includes
 #include "basic.hpp"
 #include <iostream>
@@ -51,7 +51,7 @@ using namespace cv;
 #define WINDOW_WIDTH 500
 #define MAX_WINDOW_HEIGHT 500
 
-#define CAMERA_DEFAULT true
+#define CAMERA_DEFAULT false
 #define GRAY_DEFAULT false
 #define DEMO_DEFAULT 5
 #define GAMMA_CORRECTION_DEMO 1
@@ -243,7 +243,7 @@ int main(int argc, char** argv)
 	delete demo;
 	deinit_parameters();
 	g_params.complete_clear();
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 	//_CrtDumpMemoryLeaks();
 }
 
