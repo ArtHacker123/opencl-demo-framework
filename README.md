@@ -1,6 +1,12 @@
 # opencl-demo-framework
 
-showcase framework for implementing and presenting multiple image processing and CV algorithms
+Showcase framework for implementing and presenting multiple image processing and CV algorithms using OpenCL.
+This framework is intended to help testing OpenCL kernel code.
+
+What it offers:
+- Testing on both static image and a stream of frames from the webcam.
+- Runtime parameters control.
+- Intuitive API for introducing new code
 
 
 
@@ -14,7 +20,7 @@ Deployment Requirements:
 `
 
 
-Alternatively, You may install the demo executable(tested for Windows 7 and 10 with Intel HD Graphics cards):
+Alternatively, You may install the demo executable to view some working examples(e.g. gradient, laplacian, feature detection etc..). This executable was tested on Windows 7 and 10 with Intel HD Graphics cards.
 
 requirements:
 
